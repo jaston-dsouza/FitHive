@@ -9,7 +9,7 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware
@@ -20,11 +20,11 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Database Connection
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  host: process.env.MYSQLHOST || process.env.DB_HOST || "localhost",
+  user: process.env.MYSQLUSER || process.env.DB_USER || "root",
+  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || "",
+  database: process.env.MYSQLDATABASE || process.env.DB_NAME || "fithive",
+  port: Number(process.env.MYSQLPORT || process.env.DB_PORT || 3307),
 });
 
 db.connect((err) => {
