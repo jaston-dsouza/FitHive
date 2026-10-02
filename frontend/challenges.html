@@ -1,649 +1,749 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Challenges - FitHive</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="dashboard.html"><img src="assets/logo.png" width="70" height="70">FitHive</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="workouts.html">Workouts</a></li>
-          <li class="nav-item"><a class="nav-link" href="progress.html">Progress</a></li>
-          <li class="nav-item"><a class="nav-link active" href="challenges.html">Challenges</a></li>
-          <li class="nav-item"><a class="nav-link" href="articles.html">Articles</a></li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-              <span id="navUsername">User</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Challenges - FitHive</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="dashboard.html"
+          ><img src="assets/logo.png" width="70" height="70" />FitHive</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="workouts.html">Workouts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="progress.html">Progress</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="challenges.html">Challenges</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="articles.html">Articles</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <span id="navUsername">User</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="profile.html">Profile</a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#" id="logoutBtn">Logout</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <div class="container py-4">
-    <!-- Page Header -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <h2 class="mb-2">🏆 Fitness Challenges</h2>
-        <p class="text-muted">Join challenges to stay motivated and earn rewards!</p>
+    <div class="container py-4">
+      <!-- Page Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="mb-2">🏆 Fitness Challenges</h2>
+          <p class="text-muted">
+            Join challenges to stay motivated and earn rewards!
+          </p>
+        </div>
       </div>
-    </div>
 
-    <!-- My Active Challenges -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card shadow-sm">
-          <div class="card-header bg-success text-white">
-            <h5 class="mb-0">✅ My Active Challenges</h5>
+      <!-- My Active Challenges -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">✅ My Active Challenges</h5>
+            </div>
+            <div class="card-body" id="myChallengesContainer">
+              <p class="text-muted">Loading your challenges...</p>
+            </div>
           </div>
-          <div class="card-body" id="myChallengesContainer">
-            <p class="text-muted">Loading your challenges...</p>
-          </div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <ul class="nav nav-pills mb-4" id="challengeFilter">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            href="#"
+            onclick="
+              filterChallenges('all');
+              return false;
+            "
+            >All Challenges</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="#"
+            onclick="
+              filterChallenges('active');
+              return false;
+            "
+            >Active</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="#"
+            onclick="
+              filterChallenges('upcoming');
+              return false;
+            "
+            >Upcoming</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="#"
+            onclick="
+              filterChallenges('ending');
+              return false;
+            "
+            >Ending Soon</a
+          >
+        </li>
+      </ul>
+
+      <!-- Available Challenges Grid -->
+      <div class="row" id="challengesContainer">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted mt-3">Loading challenges...</p>
         </div>
       </div>
     </div>
 
-    <!-- Filter Tabs -->
-    <ul class="nav nav-pills mb-4" id="challengeFilter">
-      <li class="nav-item">
-        <a class="nav-link active" href="#" onclick="filterChallenges('all'); return false;">All Challenges</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" onclick="filterChallenges('active'); return false;">Active</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" onclick="filterChallenges('upcoming'); return false;">Upcoming</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" onclick="filterChallenges('ending'); return false;">Ending Soon</a>
-      </li>
-    </ul>
-
-    <!-- Available Challenges Grid -->
-    <div class="row" id="challengesContainer">
-      <div class="col-12 text-center py-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="text-muted mt-3">Loading challenges...</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Challenge Detail Modal -->
-  <div class="modal fade" id="challengeDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="modalChallengeName">Challenge</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <p class="lead" id="modalChallengeDescription"></p>
-          
-          <div class="row mb-4">
-            <div class="col-md-3 text-center">
-              <div class="p-3 bg-light rounded">
-                <h4 id="modalTargetValue">100</h4>
-                <small id="modalTargetMetric">Steps</small>
-              </div>
-            </div>
-            <div class="col-md-3 text-center">
-              <div class="p-3 bg-light rounded">
-                <h4 id="modalRewardPoints">50</h4>
-                <small>Points</small>
-              </div>
-            </div>
-            <div class="col-md-3 text-center">
-              <div class="p-3 bg-light rounded">
-                <h4 id="modalStartDate">--</h4>
-                <small>Start Date</small>
-              </div>
-            </div>
-            <div class="col-md-3 text-center">
-              <div class="p-3 bg-light rounded">
-                <h4 id="modalEndDate">--</h4>
-                <small>End Date</small>
-              </div>
-            </div>
+    <!-- Challenge Detail Modal -->
+    <div class="modal fade" id="challengeDetailModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalChallengeName">Challenge</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
+          <div class="modal-body">
+            <p class="lead" id="modalChallengeDescription"></p>
 
-          <div class="alert alert-info">
-            <h6>📋 Challenge Rules:</h6>
-            <ul class="mb-0">
-              <li>Complete the target within the given timeframe</li>
-              <li>Track your progress automatically through workouts</li>
-              <li>Earn reward points upon completion</li>
-              <li>You can join multiple challenges</li>
-            </ul>
-          </div>
-
-          <div id="progressSection" class="d-none">
-            <h6>Your Progress:</h6>
-            <div class="progress mb-2" style="height: 25px;">
-              <div class="progress-bar bg-success" id="modalProgress" style="width: 0%">0%</div>
-            </div>
-            <p class="text-muted"><span id="modalCurrentValue">0</span> / <span id="modalTargetValueText">100</span> completed</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" id="joinChallengeBtn" onclick="joinCurrentChallenge()">Join Challenge</button>
-          <button type="button" class="btn btn-primary d-none" id="viewProgressBtn">View Progress</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const API_URL = 'http://localhost:3000/api';
-    let allChallenges = [];
-    let currentChallenge = null;
-
-    function checkAuth() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = 'login.html';
-        return false;
-      }
-      return true;
-    }
-
-    function getAuthHeaders() {
-      return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      };
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.clear();
-      window.location.href = 'login.html';
-    });
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      if (!checkAuth()) return;
-      
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user) document.getElementById('navUsername').textContent = user.username;
-      
-      await loadChallenges();
-      await loadMyChallenges();
-      checkExpiredChallenges();
-    });
-
-    async function loadChallenges() {
-      try {
-        const response = await fetch(`${API_URL}/challenges`);
-        
-        if (response.ok) {
-          allChallenges = await response.json();
-          displayChallenges(allChallenges);
-        }
-      } catch (error) {
-        console.error('Error loading challenges:', error);
-      }
-    }
-
-    function displayChallenges(challenges) {
-      const container = document.getElementById('challengesContainer');
-      const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-      const activeChallengeIds = activeChallenges.map(c => c.challenge_id);
-      
-      if (challenges.length === 0) {
-        container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No challenges available</p></div>';
-        return;
-      }
-      
-      container.innerHTML = '';
-      challenges.forEach(challenge => {
-        const endDate = new Date(challenge.end_date);
-        const startDate = new Date(challenge.start_date);
-        const today = new Date();
-        const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-        const isJoined = activeChallengeIds.includes(challenge.challenge_id);
-        const isActive = startDate <= today && endDate >= today;
-        const isUpcoming = startDate > today;
-        
-        const card = document.createElement('div');
-        card.className = 'col-md-6 col-lg-4 mb-4';
-        card.innerHTML = `
-          <div class="card h-100 shadow-sm ${isJoined ? 'border-success' : ''}">
-            <div class="card-body">
-              <div class="d-flex justify-content-between mb-3">
-                <h5 class="card-title mb-0">${challenge.challenge_name}</h5>
-                ${isJoined ? '<span class="badge bg-success">✓ Joined</span>' : ''}
-              </div>
-              
-              <p class="card-text text-muted">${challenge.description}</p>
-              
-              <div class="row g-2 mb-3">
-                <div class="col-6">
-                  <div class="text-center p-2 bg-light rounded">
-                    <h5 class="mb-0">${challenge.target_value}</h5>
-                    <small class="text-muted">${challenge.target_metric}</small>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="text-center p-2 bg-light rounded">
-                    <h5 class="mb-0">${challenge.reward_points}</h5>
-                    <small class="text-muted">Points</small>
-                  </div>
+            <div class="row mb-4">
+              <div class="col-md-3 text-center">
+                <div class="p-3 bg-light rounded">
+                  <h4 id="modalTargetValue">100</h4>
+                  <small id="modalTargetMetric">Steps</small>
                 </div>
               </div>
-
-              ${isJoined ? `
-                <div class="mb-3">
-                  <small class="text-muted">Your Progress:</small>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar bg-success" style="width: ${getProgress(challenge.challenge_id, challenge.target_value)}%">
-                      ${getProgress(challenge.challenge_id, challenge.target_value).toFixed(0)}%
-                    </div>
-                  </div>
+              <div class="col-md-3 text-center">
+                <div class="p-3 bg-light rounded">
+                  <h4 id="modalRewardPoints">50</h4>
+                  <small>Points</small>
                 </div>
-              ` : ''}
-              
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <small class="text-muted">
-                  ${isUpcoming ? `Starts ${startDate.toLocaleDateString()}` : `${daysLeft} days left`}
-                </small>
-                <span class="badge ${isActive ? 'bg-success' : isUpcoming ? 'bg-info' : 'bg-secondary'}">
-                  ${isActive ? 'Active' : isUpcoming ? 'Upcoming' : 'Ended'}
-                </span>
               </div>
+              <div class="col-md-3 text-center">
+                <div class="p-3 bg-light rounded">
+                  <h4 id="modalStartDate">--</h4>
+                  <small>Start Date</small>
+                </div>
+              </div>
+              <div class="col-md-3 text-center">
+                <div class="p-3 bg-light rounded">
+                  <h4 id="modalEndDate">--</h4>
+                  <small>End Date</small>
+                </div>
+              </div>
+            </div>
 
-              ${isJoined ? `
-  ${(() => {
-    const active = activeChallenges.find(c => c.challenge_id === challenge.challenge_id);
-    if (!active || active.expired) return '';
+            <div class="alert alert-info">
+              <h6>📋 Challenge Rules:</h6>
+              <ul class="mb-0">
+                <li>Complete the target within the given timeframe</li>
+                <li>Track your progress automatically through workouts</li>
+                <li>Earn reward points upon completion</li>
+                <li>You can join multiple challenges</li>
+              </ul>
+            </div>
 
-    return `
-      <button class="btn btn-success btn-sm mt-2"
-              onclick="logChallengeProgress(${challenge.challenge_id}, ${challenge.target_value})"
-              ${active.completed ? 'disabled' : ''}>
-              ➕ Log Today
-      </button>
-
-      <button class="btn btn-danger btn-sm mt-2 ms-2"
-              onclick="cancelChallenge(${challenge.challenge_id})">
-            ❌ Cancel
-      </button>
-    `;
-  })()}
-` : ''}
-
-
-              
-              <button class="btn btn-${isJoined ? 'outline-primary' : 'primary'} w-100" 
-                      onclick="viewChallengeDetails(${challenge.challenge_id})">
-                ${isJoined ? 'View Progress' : 'Join Challenge'}
-              </button>
+            <div id="progressSection" class="d-none">
+              <h6>Your Progress:</h6>
+              <div class="progress mb-2" style="height: 25px">
+                <div
+                  class="progress-bar bg-success"
+                  id="modalProgress"
+                  style="width: 0%"
+                >
+                  0%
+                </div>
+              </div>
+              <p class="text-muted">
+                <span id="modalCurrentValue">0</span> /
+                <span id="modalTargetValueText">100</span> completed
+              </p>
             </div>
           </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              id="joinChallengeBtn"
+              onclick="joinCurrentChallenge()"
+            >
+              Join Challenge
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary d-none"
+              id="viewProgressBtn"
+            >
+              View Progress
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    async function loadMyChallenges() {
-      const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-      const container = document.getElementById('myChallengesContainer');
-      
-      if (activeChallenges.length === 0) {
-        container.innerHTML = '<p class="text-muted">You haven\'t joined any challenges yet. Start one below!</p>';
-        return;
-      }
-      
-      container.innerHTML = '';
-      activeChallenges.forEach(challenge => {
-        const progress = ((challenge.current_value || 0) / challenge.target_value) * 100;
-        const isCompleted = challenge.completed || false;
-        
-        const div = document.createElement('div');
-        div.className = 'border-bottom pb-3 mb-3';
-        div.innerHTML = `
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="mb-0">${challenge.challenge_name} ${isCompleted ? '🎉' : ''}</h6>
-            <span class="badge ${isCompleted ? 'bg-success' : 'bg-primary'}">${challenge.reward_points} pts</span>
-          </div>
-          <div class="progress mb-2" style="height: 20px;">
-            <div class="progress-bar ${isCompleted ? 'bg-success' : 'bg-primary'}" style="width: ${Math.min(progress, 100)}%">
-              ${Math.min(progress, 100).toFixed(0)}%
-            </div>
-          </div>
-          <div class="d-flex justify-content-between">
-            <small class="text-muted">${challenge.current_value || 0} / ${challenge.target_value} ${challenge.target_metric}</small>
-            ${challenge.expired && !challenge.completed ? 
-               '<span class="badge bg-secondary">Ended</span>' :
-                isCompleted ? 
-                  '<span class="badge bg-success">Completed!</span>' : 
-                  `<small class="text-muted">Ends ${new Date(challenge.end_date).toLocaleDateString()}</small>`
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+          const API_URL = 'http://localhost:3000/api';
+          let allChallenges = [];
+          let currentChallenge = null;
+
+          function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              window.location.href = 'login.html';
+              return false;
             }
+            return true;
+          }
+
+          function getAuthHeaders() {
+            return {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            };
+          }
+
+          document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = 'login.html';
+          });
+
+          document.addEventListener('DOMContentLoaded', async () => {
+            if (!checkAuth()) return;
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) document.getElementById('navUsername').textContent = user.username;
+
+            await loadChallenges();
+            await loadMyChallenges();
+            checkExpiredChallenges();
+          });
+
+          async function loadChallenges() {
+            try {
+              const response = await fetch(`${API_URL}/challenges`);
+
+              if (response.ok) {
+                allChallenges = await response.json();
+                displayChallenges(allChallenges);
+              }
+            } catch (error) {
+              console.error('Error loading challenges:', error);
+            }
+          }
+
+          function displayChallenges(challenges) {
+            const container = document.getElementById('challengesContainer');
+            const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+            const activeChallengeIds = activeChallenges.map(c => c.challenge_id);
+
+            if (challenges.length === 0) {
+              container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No challenges available</p></div>';
+              return;
+            }
+
+            container.innerHTML = '';
+            challenges.forEach(challenge => {
+              const endDate = new Date(challenge.end_date);
+              const startDate = new Date(challenge.start_date);
+              const today = new Date();
+              const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+              const isJoined = activeChallengeIds.includes(challenge.challenge_id);
+              const isActive = startDate <= today && endDate >= today;
+              const isUpcoming = startDate > today;
+
+              const card = document.createElement('div');
+              card.className = 'col-md-6 col-lg-4 mb-4';
+              card.innerHTML = `
+                <div class="card h-100 shadow-sm ${isJoined ? 'border-success' : ''}">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                      <h5 class="card-title mb-0">${challenge.challenge_name}</h5>
+                      ${isJoined ? '<span class="badge bg-success">✓ Joined</span>' : ''}
+                    </div>
+
+                    <p class="card-text text-muted">${challenge.description}</p>
+
+                    <div class="row g-2 mb-3">
+                      <div class="col-6">
+                        <div class="text-center p-2 bg-light rounded">
+                          <h5 class="mb-0">${challenge.target_value}</h5>
+                          <small class="text-muted">${challenge.target_metric}</small>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="text-center p-2 bg-light rounded">
+                          <h5 class="mb-0">${challenge.reward_points}</h5>
+                          <small class="text-muted">Points</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    ${isJoined ? `
+                      <div class="mb-3">
+                        <small class="text-muted">Your Progress:</small>
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar bg-success" style="width: ${getProgress(challenge.challenge_id, challenge.target_value)}%">
+                            ${getProgress(challenge.challenge_id, challenge.target_value).toFixed(0)}%
+                          </div>
+                        </div>
+                      </div>
+                    ` : ''}
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <small class="text-muted">
+                        ${isUpcoming ? `Starts ${startDate.toLocaleDateString()}` : `${daysLeft} days left`}
+                      </small>
+                      <span class="badge ${isActive ? 'bg-success' : isUpcoming ? 'bg-info' : 'bg-secondary'}">
+                        ${isActive ? 'Active' : isUpcoming ? 'Upcoming' : 'Ended'}
+                      </span>
+                    </div>
+
+                    ${isJoined ? `
+        ${(() => {
+          const active = activeChallenges.find(c => c.challenge_id === challenge.challenge_id);
+          if (!active || active.expired) return '';
+
+          return `
+            <button class="btn btn-success btn-sm mt-2"
+                    onclick="logChallengeProgress(${challenge.challenge_id}, ${challenge.target_value})"
+                    ${active.completed ? 'disabled' : ''}>
+                    ➕ Log Today
+            </button>
+
+            <button class="btn btn-danger btn-sm mt-2 ms-2"
+                    onclick="cancelChallenge(${challenge.challenge_id})">
+                  ❌ Cancel
+            </button>
+          `;
+        })()}
+      ` : ''}
+
+
+
+                    <button class="btn btn-${isJoined ? 'outline-primary' : 'primary'} w-100"
+                            onclick="viewChallengeDetails(${challenge.challenge_id})">
+                      ${isJoined ? 'View Progress' : 'Join Challenge'}
+                    </button>
+                  </div>
+                </div>
+              `;
+              container.appendChild(card);
+            });
+          }
+
+          async function loadMyChallenges() {
+            const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+            const container = document.getElementById('myChallengesContainer');
+
+            if (activeChallenges.length === 0) {
+              container.innerHTML = '<p class="text-muted">You haven\'t joined any challenges yet. Start one below!</p>';
+              return;
+            }
+
+            container.innerHTML = '';
+            activeChallenges.forEach(challenge => {
+              const progress = ((challenge.current_value || 0) / challenge.target_value) * 100;
+              const isCompleted = challenge.completed || false;
+
+              const div = document.createElement('div');
+              div.className = 'border-bottom pb-3 mb-3';
+              div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="mb-0">${challenge.challenge_name} ${isCompleted ? '🎉' : ''}</h6>
+                  <span class="badge ${isCompleted ? 'bg-success' : 'bg-primary'}">${challenge.reward_points} pts</span>
+                </div>
+                <div class="progress mb-2" style="height: 20px;">
+                  <div class="progress-bar ${isCompleted ? 'bg-success' : 'bg-primary'}" style="width: ${Math.min(progress, 100)}%">
+                    ${Math.min(progress, 100).toFixed(0)}%
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <small class="text-muted">${challenge.current_value || 0} / ${challenge.target_value} ${challenge.target_metric}</small>
+                  ${challenge.expired && !challenge.completed ?
+                     '<span class="badge bg-secondary">Ended</span>' :
+                      isCompleted ?
+                        '<span class="badge bg-success">Completed!</span>' :
+                        `<small class="text-muted">Ends ${new Date(challenge.end_date).toLocaleDateString()}</small>`
+                  }
+                </div>
+              `;
+              container.appendChild(div);
+            });
+          }
+
+          function getProgress(challengeId, targetValue) {
+            const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+            const challenge = activeChallenges.find(c => c.challenge_id === challengeId);
+            if (!challenge) return 0;
+            return Math.min(((challenge.current_value || 0) / targetValue) * 100, 100);
+          }
+
+          async function viewChallengeDetails(challengeId) {
+            const challenge = allChallenges.find(c => c.challenge_id === challengeId);
+            if (!challenge) return;
+
+            currentChallenge = challenge;
+
+            document.getElementById('modalChallengeName').textContent = challenge.challenge_name;
+            document.getElementById('modalChallengeDescription').textContent = challenge.description;
+            document.getElementById('modalTargetValue').textContent = challenge.target_value;
+            document.getElementById('modalTargetMetric').textContent = challenge.target_metric;
+            document.getElementById('modalRewardPoints').textContent = challenge.reward_points;
+            document.getElementById('modalStartDate').textContent = new Date(challenge.start_date).toLocaleDateString();
+            document.getElementById('modalEndDate').textContent = new Date(challenge.end_date).toLocaleDateString();
+
+            // Check if joined
+            const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+            const joined = activeChallenges.find(c => c.challenge_id === challengeId);
+
+            if (joined) {
+              const progress = ((joined.current_value || 0) / challenge.target_value) * 100;
+              document.getElementById('progressSection').classList.remove('d-none');
+              document.getElementById('modalProgress').style.width = progress + '%';
+              document.getElementById('modalProgress').textContent = progress.toFixed(0) + '%';
+              document.getElementById('modalCurrentValue').textContent = joined.current_value || 0;
+              document.getElementById('modalTargetValueText').textContent = challenge.target_value;
+              document.getElementById('joinChallengeBtn').classList.add('d-none');
+              document.getElementById('viewProgressBtn').classList.remove('d-none');
+            } else {
+              document.getElementById('progressSection').classList.add('d-none');
+              document.getElementById('joinChallengeBtn').classList.remove('d-none');
+              document.getElementById('viewProgressBtn').classList.add('d-none');
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('challengeDetailModal'));
+            modal.show();
+          }
+
+          function joinCurrentChallenge() {
+            if (!currentChallenge) return;
+
+            const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+
+            // Check if already joined
+            if (activeChallenges.find(c => c.challenge_id === currentChallenge.challenge_id)) {
+              showSuccessPopup('You have already joined this challenge!');
+              return;
+            }
+
+            // Add to active challenges
+            activeChallenges.push({
+              challenge_id: currentChallenge.challenge_id,
+              challenge_name: currentChallenge.challenge_name,
+              description: currentChallenge.description,
+              target_value: currentChallenge.target_value,
+              target_metric: currentChallenge.target_metric,
+              reward_points: currentChallenge.reward_points,
+              start_date: currentChallenge.start_date,
+              end_date: currentChallenge.end_date,
+              current_value: 0,
+              joined_date: new Date().toISOString(),
+              completed: false
+            });
+
+            localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
+
+            // Close modal and refresh
+            bootstrap.Modal.getInstance(document.getElementById('challengeDetailModal')).hide();
+
+            // Show success message
+            showSuccessPopup(`Successfully joined "${currentChallenge.challenge_name}"! Start working towards your goal 🚀`);
+
+            loadChallenges();
+            loadMyChallenges();
+          }
+
+          function filterChallenges(filter) {
+            // Update active tab
+            document.querySelectorAll('#challengeFilter .nav-link').forEach(link => {
+              link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const today = new Date();
+            let filtered = allChallenges;
+
+            switch(filter) {
+              case 'active':
+                filtered = allChallenges.filter(c => {
+                  const start = new Date(c.start_date);
+                  const end = new Date(c.end_date);
+                  return start <= today && end >= today;
+                });
+                break;
+              case 'upcoming':
+                filtered = allChallenges.filter(c => new Date(c.start_date) > today);
+                break;
+              case 'ending':
+                filtered = allChallenges.filter(c => {
+                  const end = new Date(c.end_date);
+                  const daysLeft = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+                  return daysLeft <= 7 && daysLeft > 0;
+                });
+                break;
+            }
+
+            displayChallenges(filtered);
+          }
+
+          function logChallengeProgress(challengeId, targetValue) {
+        const now = new Date();
+        const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+        const challenge = activeChallenges.find(c => c.challenge_id === challengeId);
+
+        if (!challenge) {
+          showSuccessPopup("You haven't joined this challenge.");
+          return;
+        }
+
+        if (challenge.completed || challenge.expired) {
+          showSuccessPopup("This challenge is already completed or ended.");
+          return;
+        }
+
+        // TRUE 24-hour restriction
+        if (challenge.last_logged_date) {
+          const lastLog = new Date(challenge.last_logged_date);
+          const diff = now - lastLog;
+
+          if (diff < 24 * 60 * 60 * 1000) {
+            const hoursLeft = Math.ceil((24 * 60 * 60 * 1000 - diff) / (60 * 60 * 1000));
+            showSuccessPopup(`You can log again in ${hoursLeft} hour(s).`);
+            return;
+          }
+        }
+
+        // Increase progress
+        challenge.current_value = (challenge.current_value || 0) + 10;
+
+        // Save exact timestamp
+        challenge.last_logged_date = now.toISOString();
+
+        // Completion check
+        if (challenge.current_value >= challenge.target_value) {
+          challenge.completed = true;
+          showSuccessPopup(`🎉 You completed "${challenge.challenge_name}"!`);
+        }
+
+        localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
+
+        loadChallenges();
+        loadMyChallenges();
+      }
+
+      let challengeToCancel = null;
+
+      function cancelChallenge(challengeId) {
+        challengeToCancel = challengeId;
+
+        const modal = new bootstrap.Modal(
+          document.getElementById('cancelConfirmModal')
+        );
+        modal.show();
+      }
+
+      // Confirm button action
+      document.addEventListener('DOMContentLoaded', () => {
+        const confirmBtn = document.getElementById('confirmCancelBtn');
+
+        if (confirmBtn) {
+          confirmBtn.addEventListener('click', () => {
+            if (!challengeToCancel) return;
+
+            let activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+
+            activeChallenges = activeChallenges.filter(
+              c => c.challenge_id !== challengeToCancel
+            );
+
+            localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
+
+            challengeToCancel = null;
+
+            const modal = bootstrap.Modal.getInstance(
+              document.getElementById('cancelConfirmModal')
+            );
+            modal.hide();
+
+            showSuccessPopup("Challenge cancelled successfully ❌");
+
+            loadChallenges();
+            loadMyChallenges();
+          });
+        }
+      });
+
+
+      function updateChallengeBar(challengeId, progress, targetValue) {
+        const percentage = Math.min((progress / targetValue) * 100, 100);
+
+        const bar = document.getElementById(`challengeBar_${challengeId}`);
+        const text = document.getElementById(`challengeText_${challengeId}`);
+
+        if (bar) bar.style.width = percentage + "%";
+        if (text) text.innerText = `${progress} / ${targetValue}`;
+      }
+
+
+          function checkExpiredChallenges() {
+        const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+        const today = new Date();
+
+        let updated = false;
+
+        activeChallenges.forEach(challenge => {
+          const endDate = new Date(challenge.end_date);
+
+          if (today > endDate && !challenge.expired) {
+            challenge.expired = true;
+            updated = true;
+
+            if (challenge.current_value >= challenge.target_value) {
+              challenge.completed = true;
+              showSuccessPopup(`You completed "${challenge.challenge_name}"! 🎉`);
+            } else {
+              showSuccessPopup(`⏰ "${challenge.challenge_name}" has ended.`);
+            }
+          }
+        });
+
+        if (updated) {
+          localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
+          loadChallenges();
+          loadMyChallenges();
+        }
+      }
+
+      function showSuccessPopup(message) {
+        document.getElementById('successMessage').innerText = message;
+        const modal = new bootstrap.Modal(document.getElementById('successModal'));
+        modal.show();
+
+        setTimeout(() => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
+        modal.hide();
+        }, 3000);
+
+      }
+    </script>
+    <!-- Custom Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">🎉 Success</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function getProgress(challengeId, targetValue) {
-      const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-      const challenge = activeChallenges.find(c => c.challenge_id === challengeId);
-      if (!challenge) return 0;
-      return Math.min(((challenge.current_value || 0) / targetValue) * 100, 100);
-    }
-
-    async function viewChallengeDetails(challengeId) {
-      const challenge = allChallenges.find(c => c.challenge_id === challengeId);
-      if (!challenge) return;
-      
-      currentChallenge = challenge;
-      
-      document.getElementById('modalChallengeName').textContent = challenge.challenge_name;
-      document.getElementById('modalChallengeDescription').textContent = challenge.description;
-      document.getElementById('modalTargetValue').textContent = challenge.target_value;
-      document.getElementById('modalTargetMetric').textContent = challenge.target_metric;
-      document.getElementById('modalRewardPoints').textContent = challenge.reward_points;
-      document.getElementById('modalStartDate').textContent = new Date(challenge.start_date).toLocaleDateString();
-      document.getElementById('modalEndDate').textContent = new Date(challenge.end_date).toLocaleDateString();
-      
-      // Check if joined
-      const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-      const joined = activeChallenges.find(c => c.challenge_id === challengeId);
-      
-      if (joined) {
-        const progress = ((joined.current_value || 0) / challenge.target_value) * 100;
-        document.getElementById('progressSection').classList.remove('d-none');
-        document.getElementById('modalProgress').style.width = progress + '%';
-        document.getElementById('modalProgress').textContent = progress.toFixed(0) + '%';
-        document.getElementById('modalCurrentValue').textContent = joined.current_value || 0;
-        document.getElementById('modalTargetValueText').textContent = challenge.target_value;
-        document.getElementById('joinChallengeBtn').classList.add('d-none');
-        document.getElementById('viewProgressBtn').classList.remove('d-none');
-      } else {
-        document.getElementById('progressSection').classList.add('d-none');
-        document.getElementById('joinChallengeBtn').classList.remove('d-none');
-        document.getElementById('viewProgressBtn').classList.add('d-none');
-      }
-      
-      const modal = new bootstrap.Modal(document.getElementById('challengeDetailModal'));
-      modal.show();
-    }
-
-    function joinCurrentChallenge() {
-      if (!currentChallenge) return;
-      
-      const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-      
-      // Check if already joined
-      if (activeChallenges.find(c => c.challenge_id === currentChallenge.challenge_id)) {
-        showSuccessPopup('You have already joined this challenge!');
-        return;
-      }
-      
-      // Add to active challenges
-      activeChallenges.push({
-        challenge_id: currentChallenge.challenge_id,
-        challenge_name: currentChallenge.challenge_name,
-        description: currentChallenge.description,
-        target_value: currentChallenge.target_value,
-        target_metric: currentChallenge.target_metric,
-        reward_points: currentChallenge.reward_points,
-        start_date: currentChallenge.start_date,
-        end_date: currentChallenge.end_date,
-        current_value: 0,
-        joined_date: new Date().toISOString(),
-        completed: false
-      });
-      
-      localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
-      
-      // Close modal and refresh
-      bootstrap.Modal.getInstance(document.getElementById('challengeDetailModal')).hide();
-      
-      // Show success message
-      showSuccessPopup(`Successfully joined "${currentChallenge.challenge_name}"! Start working towards your goal 🚀`);
-      
-      loadChallenges();
-      loadMyChallenges();
-    }
-
-    function filterChallenges(filter) {
-      // Update active tab
-      document.querySelectorAll('#challengeFilter .nav-link').forEach(link => {
-        link.classList.remove('active');
-      });
-      event.target.classList.add('active');
-      
-      const today = new Date();
-      let filtered = allChallenges;
-      
-      switch(filter) {
-        case 'active':
-          filtered = allChallenges.filter(c => {
-            const start = new Date(c.start_date);
-            const end = new Date(c.end_date);
-            return start <= today && end >= today;
-          });
-          break;
-        case 'upcoming':
-          filtered = allChallenges.filter(c => new Date(c.start_date) > today);
-          break;
-        case 'ending':
-          filtered = allChallenges.filter(c => {
-            const end = new Date(c.end_date);
-            const daysLeft = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
-            return daysLeft <= 7 && daysLeft > 0;
-          });
-          break;
-      }
-      
-      displayChallenges(filtered);
-    }
-
-    function logChallengeProgress(challengeId, targetValue) {
-  const now = new Date();
-  const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-  const challenge = activeChallenges.find(c => c.challenge_id === challengeId);
-
-  if (!challenge) {
-    showSuccessPopup("You haven't joined this challenge.");
-    return;
-  }
-
-  if (challenge.completed || challenge.expired) {
-    showSuccessPopup("This challenge is already completed or ended.");
-    return;
-  }
-
-  // TRUE 24-hour restriction
-  if (challenge.last_logged_date) {
-    const lastLog = new Date(challenge.last_logged_date);
-    const diff = now - lastLog;
-
-    if (diff < 24 * 60 * 60 * 1000) {
-      const hoursLeft = Math.ceil((24 * 60 * 60 * 1000 - diff) / (60 * 60 * 1000));
-      showSuccessPopup(`You can log again in ${hoursLeft} hour(s).`);
-      return;
-    }
-  }
-
-  // Increase progress
-  challenge.current_value = (challenge.current_value || 0) + 10;
-
-  // Save exact timestamp
-  challenge.last_logged_date = now.toISOString();
-
-  // Completion check
-  if (challenge.current_value >= challenge.target_value) {
-    challenge.completed = true;
-    showSuccessPopup(`🎉 You completed "${challenge.challenge_name}"!`);
-  }
-
-  localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
-
-  loadChallenges();
-  loadMyChallenges();
-}
-
-let challengeToCancel = null;
-
-function cancelChallenge(challengeId) {
-  challengeToCancel = challengeId;
-
-  const modal = new bootstrap.Modal(
-    document.getElementById('cancelConfirmModal')
-  );
-  modal.show();
-}
-
-// Confirm button action
-document.addEventListener('DOMContentLoaded', () => {
-  const confirmBtn = document.getElementById('confirmCancelBtn');
-
-  if (confirmBtn) {
-    confirmBtn.addEventListener('click', () => {
-      if (!challengeToCancel) return;
-
-      let activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-
-      activeChallenges = activeChallenges.filter(
-        c => c.challenge_id !== challengeToCancel
-      );
-
-      localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
-
-      challengeToCancel = null;
-
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById('cancelConfirmModal')
-      );
-      modal.hide();
-
-      showSuccessPopup("Challenge cancelled successfully ❌");
-
-      loadChallenges();
-      loadMyChallenges();
-    });
-  }
-});
-
-
-function updateChallengeBar(challengeId, progress, targetValue) {
-  const percentage = Math.min((progress / targetValue) * 100, 100);
-
-  const bar = document.getElementById(`challengeBar_${challengeId}`);
-  const text = document.getElementById(`challengeText_${challengeId}`);
-
-  if (bar) bar.style.width = percentage + "%";
-  if (text) text.innerText = `${progress} / ${targetValue}`;
-}
-
-
-    function checkExpiredChallenges() {
-  const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
-  const today = new Date();
-
-  let updated = false;
-
-  activeChallenges.forEach(challenge => {
-    const endDate = new Date(challenge.end_date);
-
-    if (today > endDate && !challenge.expired) {
-      challenge.expired = true;
-      updated = true;
-
-      if (challenge.current_value >= challenge.target_value) {
-        challenge.completed = true;
-        showSuccessPopup(`You completed "${challenge.challenge_name}"! 🎉`);
-      } else {
-        showSuccessPopup(`⏰ "${challenge.challenge_name}" has ended.`);
-      }
-    }
-  });
-
-  if (updated) {
-    localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
-    loadChallenges();
-    loadMyChallenges();
-  }
-}
-
-function showSuccessPopup(message) {
-  document.getElementById('successMessage').innerText = message;
-  const modal = new bootstrap.Modal(document.getElementById('successModal'));
-  modal.show();
-
-  setTimeout(() => {
-  const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
-  modal.hide();
-  }, 3000);
-
-}
-
-
-  </script>
-  <!-- Custom Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg border-0">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">🎉 Success</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p id="successMessage" class="mb-0 fs-5"></p>
-      </div>
-      <div class="modal-footer justify-content-center border-0">
-        <button class="btn btn-success px-4" data-bs-dismiss="modal">
-          Continue
-        </button>
+          <div class="modal-body text-center">
+            <p id="successMessage" class="mb-0 fs-5"></p>
+          </div>
+          <div class="modal-footer justify-content-center border-0">
+            <button class="btn btn-success px-4" data-bs-dismiss="modal">
+              Continue
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Cancel Confirmation Modal -->
-<div class="modal fade" id="cancelConfirmModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow border-0">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title">⚠️ Cancel Challenge</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p class="fs-5 mb-0">
-          Are you sure you want to cancel this challenge?
-        </p>
-      </div>
-      <div class="modal-footer justify-content-center border-0">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
-          Keep Challenge
-        </button>
-        <button class="btn btn-danger px-4" id="confirmCancelBtn">
-          Yes, Cancel
-        </button>
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal fade" id="cancelConfirmModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">⚠️ Cancel Challenge</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="fs-5 mb-0">
+              Are you sure you want to cancel this challenge?
+            </p>
+          </div>
+          <div class="modal-footer justify-content-center border-0">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Keep Challenge
+            </button>
+            <button class="btn btn-danger px-4" id="confirmCancelBtn">
+              Yes, Cancel
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-</body>
+  </body>
 </html>

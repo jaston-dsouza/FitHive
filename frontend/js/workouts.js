@@ -2,76 +2,78 @@
 // FITHIVE - WORKOUTS.JS - Updated with Individual Workout Pages
 // ============================================================================
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = "http://localhost:3000/api";
 let allWorkouts = [];
 
 // Authentication
 function checkAuth() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (!token) {
-    window.location.href = 'login.html';
+    window.location.href = "login.html";
     return false;
   }
   return true;
 }
 
 function getAuthHeaders() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
   };
 }
 
 // Logout
-document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
   e.preventDefault();
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = 'login.html';
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "login.html";
 });
 
 // Initialize
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   if (!checkAuth()) return;
-  
-  const user = JSON.parse(localStorage.getItem('user'));
+
+  const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
-    document.getElementById('navUsername').textContent = user.username;
+    document.getElementById("navUsername").textContent = user.username;
   }
-  
+
   await loadWorkouts();
-  document.getElementById('searchWorkouts')?.addEventListener('input', searchWorkouts);
+  document
+    .getElementById("searchWorkouts")
+    ?.addEventListener("input", searchWorkouts);
 });
 
 // Load workouts
-async function loadWorkouts(difficulty = '', category = '') {
+async function loadWorkouts(difficulty = "", category = "") {
   try {
     let url = `${API_URL}/workouts`;
     const params = new URLSearchParams();
-    
-    if (difficulty) params.append('difficulty', difficulty);
-    if (category) params.append('category', category);
+
+    if (difficulty) params.append("difficulty", difficulty);
+    if (category) params.append("category", category);
     if (params.toString()) url += `?${params.toString()}`;
-    
+
     const response = await fetch(url);
-    
+
     if (response.ok) {
       allWorkouts = await response.json();
       displayWorkouts(allWorkouts);
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 }
 
 // Display workouts
 function displayWorkouts(workouts) {
-  const container = document.getElementById('workoutsContainer');
-  const resultsCount = document.getElementById('resultsCount');
-  
+  const container = document.getElementById("workoutsContainer");
+  const resultsCount = document.getElementById("resultsCount");
+
   resultsCount.textContent = workouts.length;
-  
+
   if (workouts.length === 0) {
     container.innerHTML = `
       <div class="col-12 text-center py-5">
@@ -82,9 +84,9 @@ function displayWorkouts(workouts) {
     `;
     return;
   }
-  
-  container.innerHTML = '';
-  workouts.forEach(workout => {
+
+  container.innerHTML = "";
+  workouts.forEach((workout) => {
     const card = createWorkoutCard(workout);
     container.appendChild(card);
   });
@@ -92,26 +94,26 @@ function displayWorkouts(workouts) {
 
 // Create workout card
 function createWorkoutCard(workout) {
-  const col = document.createElement('div');
-  col.className = 'col-lg-4 col-md-6 mb-4';
-  
+  const col = document.createElement("div");
+  col.className = "col-lg-4 col-md-6 mb-4";
+
   const difficultyColors = {
-    'Beginner': 'success',
-    'Intermediate': 'warning',
-    'Advanced': 'danger'
+    Beginner: "success",
+    Intermediate: "warning",
+    Advanced: "danger",
   };
-  
+
   const categoryIcons = {
-    'Cardio': '🏃',
-    'Strength': '💪',
-    'Flexibility': '🧘',
-    'HIIT': '⚡',
-    'Core': '🎯'
+    Cardio: "🏃",
+    Strength: "💪",
+    Flexibility: "🧘",
+    HIIT: "⚡",
+    Core: "🎯",
   };
-  
-  const icon = categoryIcons[workout.category] || '💪';
-  const badgeColor = difficultyColors[workout.difficulty_level] || 'primary';
-  
+
+  const icon = categoryIcons[workout.category] || "💪";
+  const badgeColor = difficultyColors[workout.difficulty_level] || "primary";
+
   col.innerHTML = `
     <div class="card h-100 shadow-sm workout-card" style="cursor: pointer;">
       <div class="card-body">
@@ -124,7 +126,7 @@ function createWorkoutCard(workout) {
         </div>
         
         <p class="card-text text-muted small mb-3" style="min-height: 60px;">
-          ${workout.description ? workout.description.substring(0, 100) + '...' : 'No description'}
+          ${workout.description ? workout.description.substring(0, 100) + "..." : "No description"}
         </p>
         
         <div class="row g-2 mb-3">
@@ -164,7 +166,7 @@ function createWorkoutCard(workout) {
       </div>
     </div>
   `;
-  
+
   return col;
 }
 
@@ -181,7 +183,7 @@ async function viewQuickDetails(workoutId) {
     const response = await fetch(`${API_URL}/workouts/${workoutId}`);
     if (response.ok) {
       const workout = await response.json();
-      
+
       // Create and show modal
       const modalHtml = `
         <div class="modal fade" id="quickViewModal" tabindex="-1">
@@ -223,79 +225,87 @@ async function viewQuickDetails(workoutId) {
           </div>
         </div>
       `;
-      
+
       // Remove existing modal if any
-      const existingModal = document.getElementById('quickViewModal');
+      const existingModal = document.getElementById("quickViewModal");
       if (existingModal) existingModal.remove();
-      
+
       // Add and show new modal
-      document.body.insertAdjacentHTML('beforeend', modalHtml);
-      const modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+      document.body.insertAdjacentHTML("beforeend", modalHtml);
+      const modal = new bootstrap.Modal(
+        document.getElementById("quickViewModal"),
+      );
       modal.show();
-      
+
       // Clean up on close
-      document.getElementById('quickViewModal').addEventListener('hidden.bs.modal', function() {
-        this.remove();
-      });
+      document
+        .getElementById("quickViewModal")
+        .addEventListener("hidden.bs.modal", function () {
+          this.remove();
+        });
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 }
 
 // Filter workouts
 function filterWorkouts() {
-  const difficulty = document.getElementById('difficultyFilter').value;
-  const category = document.getElementById('categoryFilter').value;
-  
+  const difficulty = document.getElementById("difficultyFilter").value;
+  const category = document.getElementById("categoryFilter").value;
+
   let filtered = allWorkouts;
-  
+
   if (difficulty) {
-    filtered = filtered.filter(w => w.difficulty_level === difficulty);
+    filtered = filtered.filter((w) => w.difficulty_level === difficulty);
   }
-  
+
   if (category) {
-    filtered = filtered.filter(w => w.category === category);
+    filtered = filtered.filter((w) => w.category === category);
   }
-  
+
   displayWorkouts(filtered);
 }
 
 // Search workouts
 function searchWorkouts() {
-  const searchTerm = document.getElementById('searchWorkouts').value.toLowerCase();
-  
+  const searchTerm = document
+    .getElementById("searchWorkouts")
+    .value.toLowerCase();
+
   if (searchTerm.length < 2) {
     displayWorkouts(allWorkouts);
     return;
   }
-  
-  const filtered = allWorkouts.filter(workout => 
-    workout.workout_name.toLowerCase().includes(searchTerm) ||
-    (workout.description && workout.description.toLowerCase().includes(searchTerm)) ||
-    (workout.category && workout.category.toLowerCase().includes(searchTerm))
+
+  const filtered = allWorkouts.filter(
+    (workout) =>
+      workout.workout_name.toLowerCase().includes(searchTerm) ||
+      (workout.description &&
+        workout.description.toLowerCase().includes(searchTerm)) ||
+      (workout.category && workout.category.toLowerCase().includes(searchTerm)),
   );
-  
+
   displayWorkouts(filtered);
 }
 
 // Clear filters
 function clearFilters() {
-  document.getElementById('searchWorkouts').value = '';
-  document.getElementById('difficultyFilter').value = '';
-  document.getElementById('categoryFilter').value = '';
+  document.getElementById("searchWorkouts").value = "";
+  document.getElementById("difficultyFilter").value = "";
+  document.getElementById("categoryFilter").value = "";
   displayWorkouts(allWorkouts);
 }
 
 // Format date
 function formatDate(dateString) {
-  if (!dateString) return 'Unknown';
+  if (!dateString) return "Unknown";
   const date = new Date(dateString);
   const now = new Date();
   const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-  
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   return date.toLocaleDateString();
