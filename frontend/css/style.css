@@ -1,0 +1,514 @@
+/* ============================================================================ */
+/* FITHIVE - CSS STYLES (css/style.css) */
+/* ============================================================================ */
+
+:root {
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+}
+
+/* Feature Cards */
+.feature-icon {
+  font-size: 32px;
+}
+
+/* Dashboard Cards */
+.card {
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Cards */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-info,
+.card.bg-warning {
+  border: none;
+}
+
+/* Progress Bars */
+.progress {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+/* Tables */
+.table {
+  background: white;
+}
+
+.table thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Forms */
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 10px 15px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Badges */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Navigation */
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    text-align: center;
+  }
+  
+  .hero-section img {
+    margin-top: 30px;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+}
+
+/* Loading Spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0a58ca;
+}
+
+/* Chart Container */
+canvas {
+  max-width: 100%;
+}
+
+/* Alert Messages */
+.alert {
+  border-radius: 8px;
+  border: none;
+  padding: 15px 20px;
+}
+
+/* Workout Cards */
+.workout-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.workout-card:hover {
+  border-color: var(--primary-color);
+}
+
+/* Challenge Cards */
+.challenge-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Profile Avatar */
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+}
+
+/* Admin Dashboard */
+.admin-sidebar {
+  background-color: var(--dark-color);
+  color: white;
+  min-height: 100vh;
+}
+
+.admin-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.7);
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Statistics Cards */
+.stat-card {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #0a58ca 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+/* Modal Customization */
+.modal-content {
+  border-radius: 15px;
+  border: none;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 20px 25px;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--secondary-color);
+}
+
+.empty-state img {
+  max-width: 200px;
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+/* Success State */
+.success-icon {
+  font-size: 64px;
+  color: var(--success-color);
+  margin-bottom: 20px;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .btn,
+  footer {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
+/* ============================================================================ */
+/* FITHIVE - ADDITIONAL WORKOUTS STYLES */
+/* Add these styles to your existing frontend/css/style.css file */
+/* ============================================================================ */
+
+/* Workout Card Styling */
+.workout-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.workout-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color, #0d6efd);
+}
+
+.workout-card .card-body {
+  position: relative;
+}
+
+/* Workout Stats Boxes */
+.workout-card .bg-light {
+  transition: background-color 0.3s ease;
+}
+
+.workout-card:hover .bg-light {
+  background-color: #f0f8ff !important;
+}
+
+/* Badge Animations */
+.workout-card .badge {
+  transition: transform 0.2s ease;
+}
+
+.workout-card:hover .badge {
+  transform: scale(1.1);
+}
+
+/* Button Hover Effects */
+.workout-card .btn-primary {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.workout-card .btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.workout-card .btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Category Badge Colors */
+.badge.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  color: white;
+  border-bottom: none;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+/* Workout Detail Stats */
+.modal-body .bg-light {
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.modal-body .bg-light:hover {
+  background-color: #f0f8ff !important;
+  border-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+/* Filter Card Styling */
+.card-body .form-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.card-body .form-control:focus,
+.card-body .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Results Count */
+#resultsCount {
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+/* Empty State Styling */
+.workout-card-empty {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Loading Spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .workout-card .card-body {
+    padding: 1rem;
+  }
+  
+  .workout-card h5 {
+    font-size: 1rem;
+  }
+  
+  .workout-card .card-text {
+    font-size: 0.85rem;
+  }
+}
+
+/* Animation for Card Entry */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.workout-card {
+  animation: slideInUp 0.5s ease forwards;
+}
+
+.workout-card:nth-child(1) { animation-delay: 0.1s; }
+.workout-card:nth-child(2) { animation-delay: 0.2s; }
+.workout-card:nth-child(3) { animation-delay: 0.3s; }
+.workout-card:nth-child(4) { animation-delay: 0.4s; }
+.workout-card:nth-child(5) { animation-delay: 0.5s; }
+.workout-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for Modal */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #0d6efd;
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #0a58ca;
+}
+
+.workout-card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workouts - FitHive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="dashboard.html"><img src="assets/logo.png" width="70" height="70">FitHive</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="workouts.html">Workouts</a></li>
+          <li class="nav-item"><a class="nav-link" href="progress.html">Progress</a></li>
+          <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
+          <li class="nav-item"><a class="nav-link" href="articles.html">Articles</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <span id="navUsername">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="mb-2">💪 Workout Library</h2>
+        <p class="text-muted">Browse and discover workouts for all fitness levels</p>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small text-muted">Search Workouts</label>
+                <input type="text" class="form-control" id="searchWorkouts" placeholder="Search by name or description...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small text-muted">Difficulty Level</label>
+                <select class="form-select" id="difficultyFilter">
+                  <option value="">All Difficulties</option>
+                  <option value="Beginner">🟢 Beginner</option>
+                  <option value="Intermediate">🟡 Intermediate</option>
+                  <option value="Advanced">🔴 Advanced</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small text-muted">Category</label>
+                <select class="form-select" id="categoryFilter">
+                  <option value="">All Categories</option>
+                  <option value="Cardio">🏃 Cardio</option>
+                  <option value="Strength">💪 Strength</option>
+                  <option value="Flexibility">🧘 Flexibility</option>
+                  <option value="HIIT">⚡ HIIT</option>
+                  <option value="Core">🎯 Core</option>
+                </select>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="filterWorkouts()">
+                  <span>🔍 Apply Filters</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <p class="text-muted mb-0">
+          <span id="resultsCount">Loading...</span> workouts found
+        </p>
+      </div>
+    </div>
+
+    <!-- Workouts Grid -->
+    <div class="row g-4" id="workoutsContainer">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-3">Loading workouts...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workout Detail Modal -->
+  <div class="modal fade" id="workoutDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalWorkoutName">Workout Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <span class="badge mb-2" id="modalDifficulty">Beginner</span>
+              <span class="badge bg-info mb-2" id="modalCategory">Cardio</span>
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-4 text-center">
+              <div class="p-3 bg-light rounded">
+                <h4 class="mb-0 text-primary" id="modalDuration">30</h4>
+                <small class="text-muted">Minutes</small>
+              </div>
+            </div>
+            <div class="col-md-4 text-center">
+              <div class="p-3 bg-light rounded">
+                <h4 class="mb-0 text-danger" id="modalCalories">250</h4>
+                <small class="text-muted">Calories</small>
+              </div>
+            </div>
+            <div class="col-md-4 text-center">
+              <div class="p-3 bg-light rounded">
+                <h4 class="mb-0 text-success" id="modalCreated">-</h4>
+                <small class="text-muted">Added</small>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="mb-3">📝 Description</h6>
+          <p class="text-muted mb-4" id="modalDescription">Loading...</p>
+
+          <h6 class="mb-3">🎯 What You'll Need</h6>
+          <ul class="list-unstyled mb-4">
+            <li>✓ <span id="modalEquipment">No equipment needed</span></li>
+            <li>✓ Comfortable workout space</li>
+            <li>✓ Water bottle</li>
+            <li>✓ Exercise mat (optional)</li>
+          </ul>
+
+          <h6 class="mb-3">💡 Tips</h6>
+          <div class="alert alert-info mb-0">
+            <ul class="mb-0">
+              <li>Warm up for 5-10 minutes before starting</li>
+              <li>Stay hydrated throughout the workout</li>
+              <li>Listen to your body and take breaks as needed</li>
+              <li>Cool down and stretch after completing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="startWorkout()">Start Workout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/workouts.js"></script>
+</body>
+</html>

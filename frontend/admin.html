@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - FitHive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script>
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+  }
+</script>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="admin-sidebar" id="adminSidebar">
+      <div class="p-4">
+        <h4 class="text-white mb-4"><img src="assets/logo.png" width="70" height="70"><strong>FitHive Admin</strong></h4>
+        <nav class="nav flex-column">
+          <a class="nav-link active" href="admin.html">
+            📊 Dashboard
+          </a>
+          <a class="nav-link" href="admin-users.html">
+            👥 Users
+          </a>
+          <a class="nav-link" href="admin-workouts.html">
+            💪 Workouts
+          </a>
+          <a class="nav-link" href="admin-articles.html">
+            📚 Articles
+          </a>
+          <a class="nav-link" href="admin-challenges.html">
+            🏆 Challenges
+          </a>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.2)">
+          <a class="nav-link" href="dashboard.html">
+            🏠 Back to Main Site
+          </a>
+          <a class="nav-link" href="#" id="adminLogout" >
+            🚪 Logout
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1" style="background-color: #f8f9fa;">
+      <!-- Top Bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Admin Dashboard</span>
+          <div class="ms-auto">
+            <span class="badge bg-primary" id="adminUserBadge"></span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Dashboard Content -->
+      <div class="container-fluid p-4">
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                      Total Users
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalUsers">
+                      <div class="spinner-border spinner-border-sm" role="status"></div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="fas fa-users fa-2x text-gray-300">👥</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                      Active Users
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeUsers">
+                      <div class="spinner-border spinner-border-sm" role="status"></div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                      Total Workouts
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalWorkouts">
+                      <div class="spinner-border spinner-border-sm" role="status"></div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="fas fa-dumbbell fa-2x text-gray-300"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+              <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                      Total Articles
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalArticles">
+                      <div class="spinner-border spinner-border-sm" role="status"></div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="fas fa-book fa-2x text-gray-300"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">User Registration Trend</h6>
+              </div>
+              <div class="card-body">
+                <canvas id="userRegistrationChart" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Workout Categories Distribution</h6>
+              </div>
+              <div class="card-body">
+                <canvas id="workoutCategoryChart" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Tables -->
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Recent Users</h6>
+                <a href="admin-users.html" class="btn btn-sm btn-primary">View All</a>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recentUsersTable">
+                      <tr>
+                        <td colspan="4" class="text-center">
+                          <div class="spinner-border spinner-border-sm" role="status"></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+              </div>
+              <div class="card-body">
+                <div id="recentActivityList">
+                  <div class="text-center">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Detail Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">User Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="userModalContent">
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Check admin authentication on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuth()) return;
+    });
+
+    function getAuthHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  };
+}
+
+async function loadAdminAnalytics() {
+  try {
+    const response = await fetch(`${API_URL}/admin/analytics`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch analytics");
+      return;
+    }
+
+    const data = await response.json();
+
+    document.getElementById('totalUsers').textContent = data.totalUsers;
+    document.getElementById('activeUsers').textContent = data.activeUsers;
+    document.getElementById('totalWorkouts').textContent = data.totalWorkouts;
+    document.getElementById('totalArticles').textContent = data.totalArticles;
+
+  } catch (error) {
+    console.error("Admin analytics error:", error);
+  }
+}
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadAdminAnalytics();
+  await loadUserRegistrationChart();
+  await loadWorkoutCategoryChart();
+  await loadRecentUsers(); 
+  await loadRecentActivity();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('adminLogout');
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+  }
+});
+
+
+async function loadUserRegistrationChart() {
+  try {
+    const response = await fetch(`${API_URL}/admin/user-registration-trend`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch user trend");
+      return;
+    }
+
+    const data = await response.json();
+
+    const labels = data.map(item => item.date);
+    const counts = data.map(item => item.count);
+
+    const ctx = document.getElementById('userRegistrationChart').getContext('2d');
+
+    // 🎨 Gradient Fill
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(78, 115, 223, 0.6)');
+    gradient.addColorStop(1, 'rgba(78, 115, 223, 0.05)');
+
+    // 📈 Calculate Growth %
+    let growthText = '';
+    if (counts.length >= 2) {
+      const last = counts[counts.length - 1];
+      const prev = counts[counts.length - 2];
+      const growth = prev === 0 ? 100 : (((last - prev) / prev) * 100).toFixed(1);
+      growthText = ` (${growth}% vs last month)`;
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'New Users',
+          data: counts,
+          borderColor: '#4e73df',
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#4e73df',
+          pointHoverRadius: 8,
+          pointHoverBorderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 1800,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: true
+          },
+          tooltip: {
+            backgroundColor: '#ffffff',
+            titleColor: '#000',
+            bodyColor: '#000',
+            borderColor: '#4e73df',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                return `${context.raw} registrations`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0,0,0,0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Growth Info Under Title
+    const title = document.querySelector("#userRegistrationChart")
+      .closest('.card')
+      .querySelector('.card-header h6');
+
+    if (growthText) {
+      title.innerHTML = `User Registration Trend <span style="color:#1cc88a; font-weight:normal;">${growthText}</span>`;
+    }
+
+  } catch (error) {
+    console.error("User registration chart error:", error);
+  }
+}
+
+
+async function loadWorkoutCategoryChart() {
+  try {
+    const response = await fetch(`${API_URL}/admin/workout-categories`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch workout categories");
+      return;
+    }
+
+    const data = await response.json();
+
+    const labels = data.map(item => item.category);
+    const counts = data.map(item => item.count);
+
+    const total = counts.reduce((a, b) => a + b, 0);
+
+    const ctx = document.getElementById('workoutCategoryChart').getContext('2d');
+
+    // 🎨 Gradient Colors
+    const gradients = counts.map((_, index) => {
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      const colors = [
+        ['#4e73df', '#224abe'],
+        ['#1cc88a', '#17a673'],
+        ['#36b9cc', '#258391'],
+        ['#f6c23e', '#dda20a'],
+        ['#e74a3b', '#be2617'],
+        ['#858796', '#60616f']
+      ];
+      gradient.addColorStop(0, colors[index % colors.length][0]);
+      gradient.addColorStop(1, colors[index % colors.length][1]);
+      return gradient;
+    });
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: counts,
+          backgroundColor: gradients,
+          hoverOffset: 15
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          animateRotate: true,
+          duration: 1500
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const percentage = ((context.raw / total) * 100).toFixed(1);
+                return `${context.label}: ${context.raw} (${percentage}%)`;
+              }
+            }
+          },
+          datalabels: {
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 14
+            },
+            formatter: (value) => {
+              return ((value / total) * 100).toFixed(1) + '%';
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels, {
+        // 🏆 Center Text Plugin
+        id: 'centerText',
+        beforeDraw(chart) {
+          const { width } = chart;
+          const { height } = chart;
+          const ctx = chart.ctx;
+          ctx.restore();
+
+          const fontSize = (height / 150).toFixed(2);
+          ctx.font = `${fontSize}em sans-serif`;
+          ctx.textBaseline = "middle";
+
+          const text = `${total}`;
+          const textX = Math.round((width - ctx.measureText(text).width) / 2);
+          const textY = height / 2;
+
+          ctx.fillStyle = "#333";
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }]
+    });
+
+  } catch (error) {
+    console.error("Workout category chart error:", error);
+  }
+}
+
+async function loadRecentUsers() {
+  try {
+    const response = await fetch(`${API_URL}/admin/users/recent?limit=5`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch recent users");
+      return;
+    }
+
+    const users = await response.json();
+    const tableBody = document.getElementById('recentUsersTable');
+    tableBody.innerHTML = '';
+
+    if (users.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center text-muted">
+            🚫 No users found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    users.forEach((user, index) => {
+      const row = document.createElement('tr');
+
+      // 🟢 Online detection (last login within 10 minutes)
+      const isOnline = user.last_login &&
+        (new Date() - new Date(user.last_login)) < 10 * 60 * 1000;
+
+      row.style.opacity = 0;
+      row.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => row.style.opacity = 1, index * 150);
+
+      row.innerHTML = `
+        <td>
+          <strong>${user.username}</strong>
+          ${isOnline ? '<span class="badge bg-success ms-2">Online</span>' : ''}
+        </td>
+        <td>${user.email}</td>
+        <td>${timeAgo(user.created_at)}</td>
+        <td>
+          <span class="badge ${user.is_active ? 'bg-success' : 'bg-danger'}">
+            ${user.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+      `;
+
+      function timeAgo(dateString) {
+  const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+
+  const intervals = {
+    year: 31536000,
+    month: 2592000,
+    day: 86400,
+    hour: 3600,
+    minute: 60
+  };
+
+  for (let key in intervals) {
+    const interval = Math.floor(seconds / intervals[key]);
+    if (interval >= 1) {
+      return `${interval} ${key}${interval > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  return "Just now";
+}
+
+      // 🔍 Click row to open modal
+      row.style.cursor = 'pointer';
+      row.onclick = () => openUserModal(user);
+
+      tableBody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error("Recent users error:", error);
+  }
+}
+
+async function loadRecentActivity() {
+  try {
+    const response = await fetch(`${API_URL}/admin/recent-activity`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch activity");
+      return;
+    }
+
+    const activities = await response.json();
+    const container = document.getElementById('recentActivityList');
+    container.innerHTML = '';
+
+    if (activities.length === 0) {
+      container.innerHTML = '<p class="text-muted text-center">No recent activity</p>';
+      return;
+    }
+
+    activities.forEach((item, index) => {
+      const iconMap = {
+        user: '👤',
+        workout: '💪',
+        article: '📚',
+        challenge: '🏆'
+      };
+
+      const div = document.createElement('div');
+      div.className = 'mb-3 p-2 rounded activity-item';
+      div.style.opacity = 0;
+      div.style.transition = 'opacity 0.4s ease';
+
+      setTimeout(() => div.style.opacity = 1, index * 150);
+
+      div.innerHTML = `
+        <div class="d-flex justify-content-between">
+          <div>
+            <strong>${iconMap[item.type] || '📌'} ${item.title}</strong>
+            <div class="text-muted small">
+              ${item.type.charAt(0).toUpperCase() + item.type.slice(1)} created
+            </div>
+          </div>
+          <small class="text-muted">
+            ${new Date(item.created_at).toLocaleString()}
+          </small>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+  } catch (error) {
+    console.error("Recent activity error:", error);
+  }
+}
+
+
+function openUserModal(user) {
+  const content = `
+    <p><strong>Username:</strong> ${user.username}</p>
+    <p><strong>Email:</strong> ${user.email}</p>
+    <p><strong>Full Name:</strong> ${user.full_name || 'N/A'}</p>
+    <p><strong>Joined:</strong> ${new Date(user.created_at).toLocaleString()}</p>
+    <p><strong>Last Login:</strong> ${user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}</p>
+    <p><strong>Status:</strong> 
+      <span class="badge ${user.is_active ? 'bg-success' : 'bg-danger'}">
+        ${user.is_active ? 'Active' : 'Inactive'}
+      </span>
+    </p>
+  `;
+
+  document.getElementById('userModalContent').innerHTML = content;
+
+  const modal = new bootstrap.Modal(document.getElementById('userModal'));
+  modal.show();
+}
+
+
+  </script>
+</body>
+</html>

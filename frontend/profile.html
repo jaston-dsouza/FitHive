@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - FitHive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="dashboard.html"><img src="assets/logo.png" width="70" height="70">FitHive</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="workouts.html">Workouts</a></li>
+          <li class="nav-item"><a class="nav-link" href="progress.html">Progress</a></li>
+          <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
+          <li class="nav-item"><a class="nav-link" href="articles.html">Articles</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+              <span id="navUsername">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item active" href="profile.html">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container py-4">
+    <div class="row">
+      <!-- Profile Sidebar -->
+      <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <!-- Profile Avatar -->
+            <div class="mb-3">
+              <div class="rounded-circle bg-primary text-white mx-auto d-flex align-items-center justify-content-center" 
+                   style="width: 120px; height: 120px; font-size: 48px;">
+                <span id="userInitials">U</span>
+              </div>
+            </div>
+            
+            <h5 class="mb-1" id="profileFullName">Loading...</h5>
+            <p class="text-muted mb-3" id="profileUsername">@username</p>
+            
+            <div class="d-grid gap-2 mb-3">
+              <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                ✏️ Edit Profile
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                🔒 Change Password
+              </button>
+            </div>
+            
+            <!-- User Stats -->
+            <div class="border-top pt-3">
+              <div class="row text-center">
+                <div class="col-6 border-end">
+                  <h4 class="mb-0" id="totalDays">0</h4>
+                  <small class="text-muted">Days Active</small>
+                </div>
+                <div class="col-6">
+                  <h4 class="mb-0" id="totalGoals">0</h4>
+                  <small class="text-muted">Goals Set</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BMI Calculator Card -->
+        <div class="card shadow-sm mt-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">📊 Quick BMI Calculator</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-2">
+              <label class="form-label small">Weight (kg)</label>
+              <input type="number" class="form-control form-control-sm" id="bmiWeight" step="0.1">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small">Height (cm)</label>
+              <input type="number" class="form-control form-control-sm" id="bmiHeight" step="0.1">
+            </div>
+            <button class="btn btn-primary btn-sm w-100" onclick="calculateBMI()">Calculate</button>
+            <div id="bmiResult" class="mt-3 d-none">
+              <div class="alert alert-info mb-0 p-2">
+                <strong>BMI:</strong> <span id="bmiValue">0</span><br>
+                <small><span id="bmiCategory">-</span></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Profile Content -->
+      <div class="col-lg-9">
+        <!-- Profile Information Card -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">👤 Profile Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="small text-muted">Full Name</label>
+                <p class="mb-0 fw-bold" id="displayFullName">-</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small text-muted">Email</label>
+                <p class="mb-0 fw-bold" id="displayEmail">-</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small text-muted">Username</label>
+                <p class="mb-0 fw-bold" id="displayUsername">-</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small text-muted">Member Since</label>
+                <p class="mb-0 fw-bold" id="displayMemberSince">-</p>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="small text-muted">Age</label>
+                <p class="mb-0 fw-bold" id="displayAge">-</p>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="small text-muted">Gender</label>
+                <p class="mb-0 fw-bold" id="displayGender">-</p>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="small text-muted">Height</label>
+                <p class="mb-0 fw-bold" id="displayHeight">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fitness Goals Management -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">🎯 Your Fitness Goals</h5>
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createGoalModal">
+                + New Goal
+              </button>
+            </div>
+          </div>
+          <div class="card-body" id="goalsContainer">
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status"></div>
+            </div>
+          </div>
+        </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="editProfileAlert" class="alert d-none"></div>
+          <form id="editProfileForm">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="editFullName" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Age</label>
+                <input type="number" class="form-control" id="editAge" min="13" max="120">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="editGender">
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Height (cm)</label>
+              <input type="number" class="form-control" id="editHeight" step="0.01">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Change Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info">
+            <small>Note: Password change functionality requires additional backend implementation.</small>
+          </div>
+          <form id="changePasswordForm">
+            <div class="mb-3">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" required minlength="6">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Goal Modal -->
+  <div class="modal fade" id="createGoalModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New Goal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="createGoalAlert" class="alert d-none"></div>
+          <form id="createGoalForm">
+            <div class="mb-3">
+              <label class="form-label">Goal Type</label>
+              <select class="form-select" id="goalType" required>
+                <option value="">Select Goal Type</option>
+                <option value="Weight Loss">Weight Loss</option>
+                <option value="Muscle Gain">Muscle Gain</option>
+                <option value="General Fitness">General Fitness</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Current Weight (kg)</label>
+                <input type="number" class="form-control" id="goalCurrentWeight" step="0.1" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Target Weight (kg)</label>
+                <input type="number" class="form-control" id="goalTargetWeight" step="0.1" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Target Date</label>
+              <input type="date" class="form-control" id="goalTargetDate" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Create Goal</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Goal Modal -->
+<div class="modal fade" id="updateGoalModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Goal Progress</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="updateGoalForm">
+          <input type="hidden" id="updateGoalId">
+
+          <div class="mb-3">
+            <label class="form-label">Current Weight (kg)</label>
+            <input type="number" class="form-control" id="updateCurrentWeight" step="0.1" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">
+            Update Progress
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+
+    // Check Authentication
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return false;
+      }
+      return true;
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('token');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function showAlert(elementId, message, type) {
+      const alertElement = document.getElementById(elementId);
+      alertElement.className = `alert alert-${type}`;
+      alertElement.textContent = message;
+      alertElement.classList.remove('d-none');
+      setTimeout(() => alertElement.classList.add('d-none'), 5000);
+    }
+
+    // Logout Handler
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    });
+
+    // Initialize Profile Page
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuth()) return;
+      
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user) {
+        document.getElementById('navUsername').textContent = user.username;
+      }
+      
+      await Promise.all([
+        loadProfile(),
+        loadGoals(),
+        loadActivitySummary(),
+      ]);
+    });
+
+    // Load User Profile
+    async function loadProfile() {
+      try {
+        const response = await fetch(`${API_URL}/users/profile`, {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          const profile = await response.json();
+          
+          // Sidebar
+          const initials = profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
+          document.getElementById('userInitials').textContent = initials;
+          document.getElementById('profileFullName').textContent = profile.full_name;
+          document.getElementById('profileUsername').textContent = `@${profile.username}`;
+          
+          // Profile Info Card
+          document.getElementById('displayFullName').textContent = profile.full_name;
+          document.getElementById('displayEmail').textContent = profile.email;
+          document.getElementById('displayUsername').textContent = profile.username;
+          document.getElementById('displayMemberSince').textContent = new Date(profile.created_at).toLocaleDateString();
+          document.getElementById('displayAge').textContent = profile.age || 'Not set';
+          document.getElementById('displayGender').textContent = profile.gender || 'Not set';
+          document.getElementById('displayHeight').textContent = profile.height ? `${profile.height} cm` : 'Not set';
+          
+          // Calculate days active
+          const daysActive = Math.floor((new Date() - new Date(profile.created_at)) / (1000 * 60 * 60 * 24));
+          document.getElementById('totalDays').textContent = daysActive;
+          
+          // Pre-fill edit form
+          document.getElementById('editFullName').value = profile.full_name;
+          document.getElementById('editAge').value = profile.age || '';
+          document.getElementById('editGender').value = profile.gender || '';
+          document.getElementById('editHeight').value = profile.height || '';
+          
+          // Pre-fill BMI calculator
+          if (profile.height) {
+            document.getElementById('bmiHeight').value = profile.height;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    }
+
+    // Load Goals
+    async function loadGoals() {
+      try {
+        const response = await fetch(`${API_URL}/goals`, { headers: getAuthHeaders() });
+        
+        if (response.ok) {
+          const goals = await response.json();
+          const container = document.getElementById('goalsContainer');
+          
+          document.getElementById('totalGoals').textContent = goals.length;
+          
+          if (goals.length === 0) {
+            container.innerHTML = `
+              <div class="text-center py-4">
+                <p class="text-muted">No goals set yet. Create your first goal!</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createGoalModal">Create Goal</button>
+              </div>
+            `;
+            return;
+          }
+          
+          container.innerHTML = '';
+          goals.forEach(goal => {
+            const progress = goal.current_weight && goal.target_weight 
+              ? Math.abs(((goal.current_weight - goal.target_weight) / goal.current_weight) * 100).toFixed(1)
+              : 0;
+            
+            const remaining = goal.current_weight && goal.target_weight
+              ? Math.abs(goal.current_weight - goal.target_weight).toFixed(1)
+              : 0;
+            
+            const statusColors = { Active: 'success', Completed: 'primary', Abandoned: 'secondary' };
+            
+            const goalCard = document.createElement('div');
+            goalCard.className = 'card mb-3 border';
+            goalCard.innerHTML = `
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h5 class="mb-1">${goal.goal_type}</h5>
+                    <small class="text-muted">Created ${new Date(goal.created_at).toLocaleDateString()}</small>
+                  </div>
+                  <span class="badge bg-${statusColors[goal.status]}">${goal.status}</span>
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-4 text-center">
+                    <small class="text-muted">Current</small>
+                    <h4 class="mb-0">${goal.current_weight || '--'}</h4>
+                    <small>kg</small>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small class="text-muted">Target</small>
+                    <h4 class="mb-0">${goal.target_weight || '--'}</h4>
+                    <small>kg</small>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small class="text-muted">Remaining</small>
+                    <h4 class="mb-0 text-primary">${remaining}</h4>
+                    <small>kg</small>
+                  </div>
+                </div>
+                
+                <div class="progress mb-2" style="height: 20px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: ${progress}%">
+                    ${progress}%
+                  </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    ${goal.target_date ? `Target: ${new Date(goal.target_date).toLocaleDateString()}` : 'No target date'}
+                  </small>
+                  <button class="btn btn-sm btn-outline-primary" onclick="updateGoal(${goal.goal_id})">Update</button>
+                </div>
+              </div>
+            `;
+            container.appendChild(goalCard);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading goals:', error);
+      }
+    }
+
+    async function deleteGoal(goalId) {
+  if (!confirm("Are you sure you want to remove this goal?")) return;
+
+  try {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`http://localhost:3000/api/goals/${goalId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.ok) {
+      alert("Goal removed successfully!");
+      loadGoals(); // reload goals
+    } else {
+      alert("Failed to remove goal.");
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+}
+
+
+    // Load Activity Summary
+    async function loadActivitySummary() {
+      try {
+        const response = await fetch(`${API_URL}/progress/analytics`, {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('statWorkouts').textContent = data.total_entries || 0;
+          document.getElementById('statCalories').textContent = data.total_calories_burned || 0;
+          document.getElementById('statMinutes').textContent = data.total_workout_time || 0;
+          document.getElementById('statWeight').textContent = data.avg_weight ? data.avg_weight.toFixed(1) : '--';
+        }
+      } catch (error) {
+        console.error('Error loading activity summary:', error);
+      }
+    }
+
+    // Edit Profile Form Handler
+    document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const profileData = {
+        full_name: document.getElementById('editFullName').value,
+        age: document.getElementById('editAge').value || null,
+        gender: document.getElementById('editGender').value || null,
+        height: document.getElementById('editHeight').value || null
+      };
+      
+      try {
+        const response = await fetch(`${API_URL}/users/profile`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(profileData)
+        });
+        
+        if (response.ok) {
+          showAlert('editProfileAlert', 'Profile updated successfully!', 'success');
+          setTimeout(() => {
+            bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+            loadProfile();
+          }, 1500);
+          
+          // Update localStorage
+          const user = JSON.parse(localStorage.getItem('user'));
+          user.fullName = profileData.full_name;
+          localStorage.setItem('user', JSON.stringify(user));
+        } else {
+          const data = await response.json();
+          showAlert('editProfileAlert', data.error || 'Update failed', 'danger');
+        }
+      } catch (error) {
+        showAlert('editProfileAlert', 'Network error. Please try again.', 'danger');
+      }
+    });
+
+    // Create Goal Form Handler
+    document.getElementById('createGoalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const goalData = {
+        goal_type: document.getElementById('goalType').value,
+        current_weight: document.getElementById('goalCurrentWeight').value,
+        target_weight: document.getElementById('goalTargetWeight').value,
+        target_date: document.getElementById('goalTargetDate').value
+      };
+      
+      try {
+        const response = await fetch(`${API_URL}/goals`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(goalData)
+        });
+        
+        if (response.ok) {
+          showAlert('createGoalAlert', 'Goal created successfully!', 'success');
+          setTimeout(() => {
+            bootstrap.Modal.getInstance(document.getElementById('createGoalModal')).hide();
+            document.getElementById('createGoalForm').reset();
+            loadGoals();
+          }, 1500);
+        } else {
+          const data = await response.json();
+          showAlert('createGoalAlert', data.error || 'Failed to create goal', 'danger');
+        }
+      } catch (error) {
+        showAlert('createGoalAlert', 'Network error. Please try again.', 'danger');
+      }
+    });
+
+    document.getElementById("updateGoalForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const goalId = document.getElementById("updateGoalId").value;
+  const currentWeight = document.getElementById("updateCurrentWeight").value;
+
+  try {
+    const response = await fetch(`${API_URL}/goals/${goalId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        current_weight: currentWeight
+      })
+    });
+
+    if (response.ok) {
+      alert("Goal updated successfully!");
+
+      bootstrap.Modal.getInstance(document.getElementById("updateGoalModal")).hide();
+      loadGoals();
+    } else {
+      alert("Failed to update goal.");
+    }
+
+  } catch (error) {
+    console.error("Update error:", error);
+  }
+});
+
+    // BMI Calculator
+    async function calculateBMI() {
+      const weight = parseFloat(document.getElementById('bmiWeight').value);
+      const height = parseFloat(document.getElementById('bmiHeight').value);
+      
+      if (!weight || !height) {
+        alert('Please enter both weight and height');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/calculators/bmi`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ weight, height })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('bmiValue').textContent = data.bmi;
+          document.getElementById('bmiCategory').textContent = data.category;
+          document.getElementById('bmiResult').classList.remove('d-none');
+        }
+      } catch (error) {
+        console.error('Error calculating BMI:', error);
+      }
+    }
+
+    // Update Goal (Placeholder)
+    function updateGoal(goalId) {
+  document.getElementById("updateGoalId").value = goalId;
+
+  const modal = new bootstrap.Modal(document.getElementById("updateGoalModal"));
+  modal.show();
+}
+
+    // Set minimum date for goal target date (today)
+    document.getElementById('goalTargetDate').min = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+</html>

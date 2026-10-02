@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - FitHive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="dashboard.html"><img src="assets/logo.png" width="70" height="70">FitHive</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="workouts.html">Workouts</a></li>
+          <li class="nav-item"><a class="nav-link" href="progress.html">Progress</a></li>
+          <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
+          <li class="nav-item"><a class="nav-link" href="articles.html">Articles</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <span id="navUsername">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Dashboard Content -->
+  <div class="container-fluid py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="mb-2">Welcome back, <span id="userName" class="text-primary">Loading...</span>!</h2>
+        <p class="text-muted">Here's your fitness overview for today</p>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+      <!-- Current Weight Card -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card bg-primary text-white h-100 shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Current Weight</h6>
+              <span style="font-size: 24px;">⚖️</span>
+            </div>
+            <h2 class="mb-0" id="currentWeight">--</h2>
+            <small>kilograms</small>
+            <div class="mt-2">
+              <span id="weightChange" class="badge bg-light text-primary">No data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goal Weight Card -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card bg-success text-white h-100 shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Goal Weight</h6>
+              <span style="font-size: 24px;">🎯</span>
+            </div>
+            <h2 class="mb-0" id="goalWeight">--</h2>
+            <small>kilograms</small>
+            <div class="mt-2">
+              <small id="goalProgress" class="badge bg-light text-success">Set a goal</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Workouts Card -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card bg-info text-white h-100 shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Workout Sessions</h6>
+              <span style="font-size: 24px;">💪</span>
+            </div>
+            <h2 class="mb-0" id="totalSessions">0</h2>
+            <small>total sessions logged</small>
+            <div class="mt-2">
+              <span class="badge bg-light text-primary" id="totalMinutes">0 min total</span>
+             <span class="badge bg-secondary ms-2" id="avgDuration">0 min avg</span>              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calories Burned Card -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card bg-warning text-white h-100 shadow">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Calories Burned</h6>
+              <span style="font-size: 24px;">🔥</span>
+            </div>
+            <h2 class="mb-0" id="totalCalories">0</h2>
+            <small>total calories</small>
+            <div class="mt-2">
+              <span class="badge bg-light text-dark" id="avgCalories">0 avg/session</span>
+              <span class="badge bg-secondary ms-2" id="calorieTrend">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4 mb-4">
+      <!-- Your Current Goals -->
+      <div class="col-lg-6">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">🎯 Your Current Goals</h5>
+              <button class="btn btn-sm btn-primary" onclick="window.location.href='profile.html'">+ Add Goal</button>
+            </div>
+          </div>
+          <div class="card-body" id="goalsContainer">
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Progress Chart -->
+      <div class="col-lg-6">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">📊 Weight Progress (Last 30 Days)</h5>
+          </div>
+          <div class="card-body">
+            <canvas id="progressChart" height="250"></canvas>
+            <div id="noProgressData" class="text-center text-muted d-none py-5">
+              <p>No progress data yet. <a href="progress.html">Log your first entry!</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">⚡ Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3 col-sm-6">
+                <a href="progress.html" class="btn btn-outline-primary w-100 py-3">
+                  <div class="mb-2" style="font-size: 32px;">📝</div>
+                  <strong>Log Progress</strong>
+                  <p class="small text-muted mb-0">Track today's stats</p>
+                </a>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <a href="workouts.html" class="btn btn-outline-success w-100 py-3">
+                  <div class="mb-2" style="font-size: 32px;">💪</div>
+                  <strong>Browse Workouts</strong>
+                  <p class="small text-muted mb-0">Find new exercises</p>
+                </a>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <a href="challenges.html" class="btn btn-outline-info w-100 py-3">
+                  <div class="mb-2" style="font-size: 32px;">🏆</div>
+                  <strong>Join Challenge</strong>
+                  <p class="small text-muted mb-0">Stay motivated</p>
+                </a>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <a href="articles.html" class="btn btn-outline-warning w-100 py-3">
+                  <div class="mb-2" style="font-size: 32px;">📚</div>
+                  <strong>Read Articles</strong>
+                  <p class="small text-muted mb-0">Get fitness tips</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Challenges & Recent Articles -->
+    <div class="row g-4 mb-4">
+      <!-- Active Challenges -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">🏆 Active Challenges</h5>
+              <a href="challenges.html" class="btn btn-sm btn-link">View All</a>
+            </div>
+          </div>
+          <div class="card-body" id="challengesContainer">
+            <div class="text-center py-3">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Articles -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">📚 Latest Articles</h5>
+              <a href="articles.html" class="btn btn-sm btn-link">View All</a>
+            </div>
+          </div>
+          <div class="card-body" id="articlesContainer">
+            <div class="text-center py-3">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Workouts -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">💪 Featured Workouts</h5>
+              <a href="workouts.html" class="btn btn-sm btn-link">Browse All</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row" id="workoutsContainer">
+              <div class="col-12 text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+  
+  const API_URL = '/api';
+
+function checkAuth() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+}
+
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = 'login.html';
+});
+
+// Initialize Dashboard with Real-time Updates
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!checkAuth()) return;
+  
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user) {
+    document.getElementById('userName').textContent = user.fullName || user.username;
+    document.getElementById('navUsername').textContent = user.username;
+  }
+  
+  // Load all data
+  await Promise.all([
+  loadDashboardData(),
+  loadGoalsWithProgress(),
+  loadChallenges(),
+  loadArticles(),
+  loadFeaturedWorkouts(),
+  loadProgressChart(),
+  loadCurrentWeight(),
+  loadWorkoutStats(),
+  loadCaloriesStats(),
+  loadWeeklyCaloriesComparison(),
+]);
+
+
+  
+  // Check for completed workouts notification
+  showRecentWorkoutNotification();
+});
+
+// Enhanced Dashboard Stats with Latest Weight
+async function loadDashboardData() {
+  try {
+    const response = await fetch(`${API_URL}/progress/analytics`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    // Only update real elements that exist
+    document.getElementById('totalSessions').textContent =
+      data.total_sessions || 0;
+
+  } catch (error) {
+    console.error('Dashboard data error:', error);
+  }
+}
+
+
+// Enhanced Goals with Workout Progress
+async function loadGoalsWithProgress() {
+  try {
+    const response = await fetch(`${API_URL}/goals`, { headers: getAuthHeaders() });
+    
+    if (response.ok) {
+      const goals = await response.json();
+      const container = document.getElementById('goalsContainer');
+      
+      if (goals.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4">
+            <p class="text-muted mb-3">No goals set yet. Start your fitness journey!</p>
+            <a href="profile.html" class="btn btn-primary">Set Your First Goal</a>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = '';
+      
+      // Get recent workout count for goal progress
+      const progressResponse = await fetch(`${API_URL}/progress/analytics`, {
+        headers: getAuthHeaders()
+      });
+      
+      let workoutCount = 0;
+      if (progressResponse.ok) {
+        const progressData = await progressResponse.json();
+        workoutCount = progressData.total_entries || 0;
+      }
+      
+      goals.forEach(goal => {
+       let progress = 0;
+
+if (goal.start_weight && goal.current_weight && goal.target_weight) {
+
+  const start = parseFloat(goal.start_weight);
+  const current = parseFloat(goal.current_weight);
+  const target = parseFloat(goal.target_weight);
+
+  const totalJourney = Math.abs(start - target);
+  const completedJourney = Math.abs(start - current);
+
+  progress = (completedJourney / totalJourney) * 100;
+
+  progress = Math.max(0, Math.min(progress, 100)).toFixed(1);
+}    
+        let remaining = 0;
+        if (goal.current_weight && goal.target_weight) {
+        remaining = Math.abs(goal.current_weight - goal.target_weight).toFixed(1);
+     }
+        
+        const goalDiv = document.createElement('div');
+        goalDiv.className = 'border rounded p-3 mb-3 bg-light';
+        goalDiv.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h6 class="mb-1">${goal.goal_type}</h6>
+              <small class="text-muted">Target: ${goal.target_date ? new Date(goal.target_date).toLocaleDateString() : 'No date set'}</small>
+            </div>
+            <span class="badge bg-${goal.status === 'Active' ? 'success' : 'secondary'}">${goal.status}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small"><strong>Start:</strong> ${goal.start_weight || '--'} kg</span>
+            <span class="small"><strong>Current:</strong> ${goal.current_weight || '--'} kg</span>
+            <span class="small"><strong>Target:</strong> ${goal.target_weight || '--'} kg</span>
+            <span class="small text-primary"><strong>To Go:</strong> ${remaining} kg</span>
+          </div>
+          <div class="progress mb-2" style="height: 10px;">
+            <div class="progress-bar bg-success" role="progressbar" 
+              style="width: ${progress}%">
+               ${progress}%
+          </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">${progress}% complete • ${workoutCount} workouts logged</small>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary">💪 Continue</button>
+              <button class="btn btn-outline-danger btn-sm" onclick="deleteGoal(${goal.goal_id})"> 🗑 Remove</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(goalDiv);
+        
+        if (goal.status === 'Active' && goal.target_weight) {
+          document.getElementById('goalWeight').textContent = goal.target_weight;
+          document.getElementById('goalProgress').textContent = `${remaining} kg to go`;
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error loading goals:', error);
+  }
+}
+
+// Load Recent Workouts (New Feature)
+async function loadRecentWorkouts() {
+  const recentWorkouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+  
+  if (recentWorkouts.length > 0) {
+    const latest = recentWorkouts[0];
+    const workoutDate = new Date(latest.timestamp);
+    const today = new Date();
+    const hoursSince = Math.floor((today - workoutDate) / (1000 * 60 * 60));
+    
+    if (hoursSince < 2) {
+      // Show recent workout badge
+      const badge = document.createElement('div');
+      badge.className = 'alert alert-success mb-3';
+      badge.innerHTML = `
+        <strong>🎉 Recent Achievement!</strong> 
+        You completed <strong>${latest.workout}</strong> 
+        ${hoursSince === 0 ? 'just now' : hoursSince + 'h ago'}
+        (${latest.duration} min, ${latest.calories} cal)
+      `;
+      
+      const container = document.querySelector('.container-fluid .row').firstElementChild;
+      container.insertAdjacentElement('afterend', badge);
+    }
+  }
+}
+
+// Show Recent Workout Notification
+function showRecentWorkoutNotification() {
+  const recentWorkouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+  
+  if (recentWorkouts.length > 0) {
+    const latest = recentWorkouts[0];
+    const workoutDate = new Date(latest.timestamp);
+    const now = new Date();
+    const minutesSince = Math.floor((now - workoutDate) / (1000 * 60));
+    
+    // Only show if completed in last 10 minutes
+    if (minutesSince < 10 && !sessionStorage.getItem('notificationShown')) {
+      setTimeout(() => {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 80px;
+          right: 20px;
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          color: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          z-index: 9999;
+          max-width: 300px;
+        `;
+        
+        notification.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="mb-0">🎉 Workout Complete!</h6>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+          </div>
+          <p class="mb-1 small"><strong>${latest.workout}</strong></p>
+          <p class="mb-0 small">Duration: ${latest.duration} min | Calories: ${latest.calories}</p>
+        `;
+        
+        document.body.appendChild(notification);
+        sessionStorage.setItem('notificationShown', 'true');
+        
+        setTimeout(() => {
+          notification.style.animation = 'slideOut 0.5s ease';
+          setTimeout(() => notification.remove(), 500);
+        }, 8000);
+      }, 1000);
+    }
+  }
+}
+
+// Enhanced Challenges with Active Status
+
+async function loadChallenges() {
+  try {
+    const response = await fetch(`${API_URL}/challenges`);
+    const container = document.getElementById('challengesContainer');
+
+    if (!response.ok) {
+      container.innerHTML = '<p class="text-danger">Failed to load challenges.</p>';
+      return;
+    }
+
+    const challenges = await response.json();
+    container.innerHTML = '';
+
+    if (!challenges.length) {
+      container.innerHTML = '<p class="text-muted text-center">No challenges available.</p>';
+      return;
+    }
+
+    challenges.forEach(challenge => {
+      const div = document.createElement('div');
+      div.className = 'border-bottom pb-3 mb-3';
+      div.innerHTML = `
+        <h6>${challenge.challenge_name}</h6>
+        <p class="small text-muted">
+          ${(challenge.description || '').substring(0, 80)}...
+        </p>
+        <small class="text-muted">
+          Target: ${challenge.target_value} ${challenge.target_metric}
+        </small>
+      `;
+      container.appendChild(div);
+    });
+
+  } catch (error) {
+    console.error("Dashboard challenge error:", error);
+    document.getElementById('challengesContainer').innerHTML =
+      '<p class="text-danger">Error loading challenges.</p>';
+  }
+}
+
+async function loadArticles() {
+  try {
+    const response = await fetch(`${API_URL}/articles`);
+    const container = document.getElementById('articlesContainer');
+
+    if (!response.ok) {
+      container.innerHTML = '<p class="text-danger">Failed to load articles.</p>';
+      return;
+    }
+
+    const articles = await response.json();
+
+    if (!articles.length) {
+      container.innerHTML = '<p class="text-muted text-center">No articles available.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+
+    // Show only latest 3 articles
+    articles.slice(0, 3).forEach(article => {
+      const div = document.createElement('div');
+      div.className = 'border-bottom pb-3 mb-3';
+
+      div.innerHTML = `
+        <h6 class="mb-1">${article.title}</h6>
+        <p class="small text-muted mb-1">
+          ${(article.content || '').substring(0, 100)}...
+        </p>
+        <small class="text-muted">
+          ${new Date(article.created_at).toLocaleDateString()}
+        </small>
+      `;
+
+      container.appendChild(div);
+    });
+
+  } catch (error) {
+    console.error("Articles error:", error);
+    document.getElementById('articlesContainer').innerHTML =
+      '<p class="text-danger">Error loading articles.</p>';
+  }
+}
+
+async function loadFeaturedWorkouts() {
+  try {
+    const response = await fetch(`${API_URL}/workouts`);
+    const container = document.getElementById('workoutsContainer');
+
+    if (!response.ok) {
+      container.innerHTML = '<p class="text-danger text-center">Failed to load workouts.</p>';
+      return;
+    }
+
+    const workouts = await response.json();
+
+    if (!workouts.length) {
+      container.innerHTML = '<p class="text-muted text-center">No workouts available.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+
+    // Show top 4 workouts
+    workouts.slice(0, 4).forEach(workout => {
+      const col = document.createElement('div');
+      col.className = 'col-md-3 col-sm-6 mb-3';
+
+      col.innerHTML = `
+        <div class="card h-100 shadow-sm workout-card">
+          <div class="card-body d-flex flex-column">
+            <h6 class="card-title">${workout.workout_name}</h6>
+
+            <div class="mb-2">
+              <span class="badge bg-primary">${workout.duration_minutes} min</span>
+              <span class="badge bg-danger">${workout.calories_burned} cal</span>
+              <span class="badge bg-secondary">${workout.difficulty_level}</span>
+            </div>
+
+            <button class="btn btn-success mt-auto"
+              onclick="startWorkout('${workout.workout_name}', ${workout.duration_minutes}, ${workout.calories_burned})">
+              ▶ Start Workout
+            </button>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(col);
+    });
+
+  } catch (error) {
+    console.error("Workout error:", error);
+    document.getElementById('workoutsContainer').innerHTML =
+      '<p class="text-danger text-center">Error loading workouts.</p>';
+  }
+}
+
+async function startWorkout(name, duration, calories) {
+  try {
+    const response = await fetch(`${API_URL}/workout-logs`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        workout_name: name,
+        duration: duration,
+        calories: calories
+      })
+    });
+
+    if (response.ok) {
+      showSuccessPopup(`🔥 Workout "${name}" completed!`);
+
+      window.location.href = `workouts.html?name=${encodeURIComponent(name)}`;
+      await loadDashboardData();
+      await loadChallenges();
+    } else {
+      showSuccessPopup("Failed to log workout.");
+    }
+
+  } catch (error) {
+    console.error("Workout log error:", error);
+  }
+}
+
+
+async function loadProgressChart() {
+  try {
+    const response = await fetch(`${API_URL}/progress`, {
+      headers: getAuthHeaders()
+    });
+
+    const canvas = document.getElementById('progressChart');
+    const noDataDiv = document.getElementById('noProgressData');
+
+    if (!response.ok) {
+      noDataDiv.classList.remove('d-none');
+      return;
+    }
+
+    const progressData = await response.json();
+
+    if (!progressData.length) {
+      canvas.style.display = "none";
+      noDataDiv.classList.remove('d-none');
+      return;
+    }
+
+    // Get last 30 days weight entries
+    const weightEntries = progressData
+      .filter(entry => entry.weight)
+      .slice(0, 30)
+      .reverse();
+
+    const labels = weightEntries.map(entry =>
+      new Date(entry.date).toLocaleDateString()
+    );
+
+    const weights = weightEntries.map(entry => entry.weight);
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Weight (kg)',
+          data: weights,
+          borderColor: '#0d6efd',
+          backgroundColor: 'rgba(13,110,253,0.2)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Progress chart error:", error);
+  }
+}
+
+async function loadCurrentWeight() {
+  try {
+    const response = await fetch(`${API_URL}/progress/latest-weight`, {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const weightElement = document.getElementById('currentWeight');
+    const changeElement = document.getElementById('weightChange');
+
+    if (!data.current) {
+      weightElement.textContent = '--';
+      changeElement.textContent = 'No data';
+      return;
+    }
+
+    weightElement.textContent = data.current;
+
+    if (data.difference !== null) {
+      const diff = parseFloat(data.difference);
+      const sign = diff > 0 ? '+' : '';
+
+      changeElement.textContent = `${sign}${diff} kg`;
+
+      // Color logic
+      if (diff < 0) {
+        changeElement.style.color = 'green';
+      } else if (diff > 0) {
+        changeElement.style.color = 'red';
+      } else {
+        changeElement.style.color = 'gray';
+      }
+    } else {
+      changeElement.textContent = 'First entry';
+    }
+
+  } catch (error) {
+    console.error('Weight load error:', error);
+  }
+}
+
+
+async function loadWorkoutStats() {
+  try {
+    const response = await fetch(`${API_URL}/progress/analytics`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const sessionsEl = document.getElementById('totalSessions');
+    const minutesEl = document.getElementById('totalMinutes');
+    const avgEl = document.getElementById('avgDuration');
+
+    const sessions = data.total_sessions || 0;
+    const minutes = data.total_minutes || 0;
+    const avg = data.avg_duration ? Math.round(data.avg_duration) : 0;
+
+    sessionsEl.textContent = sessions;
+    minutesEl.textContent = `${minutes} min total`;
+    avgEl.textContent = `${avg} min avg`;
+
+  } catch (error) {
+    console.error("Workout stats error:", error);
+  }
+}
+
+async function loadCaloriesStats() {
+  try {
+    const response = await fetch(`${API_URL}/progress/analytics`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const totalCalories = data.total_calories || 0;
+    const avgPerSession = data.avg_calories_per_session
+      ? Math.round(data.avg_calories_per_session)
+      : 0;
+
+    document.getElementById('totalCalories').textContent = totalCalories;
+    document.getElementById('avgCalories').textContent =
+      `${avgPerSession} avg/session`;
+
+  } catch (error) {
+    console.error("Calories stats error:", error);
+  }
+}
+
+async function loadWeeklyCaloriesComparison() {
+  try {
+    const response = await fetch(`${API_URL}/progress/weekly-calories`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const diff = (data.this_week || 0) - (data.last_week || 0);
+    const badge = document.getElementById('calorieTrend');
+
+    if (diff > 0) {
+      badge.textContent = `+${diff} this week`;
+      badge.className = 'badge bg-success';
+    } else if (diff < 0) {
+      badge.textContent = `${diff} this week`;
+      badge.className = 'badge bg-danger';
+    } else {
+      badge.textContent = 'No change';
+      badge.className = 'badge bg-secondary';
+    }
+
+  } catch (error) {
+    console.error("Weekly comparison error:", error);
+  }
+}
+
+let goalToDelete = null;
+
+function deleteGoal(goalId) {
+  goalToDelete = goalId;
+  const modal = new bootstrap.Modal(
+    document.getElementById('deleteConfirmModal')
+  );
+  modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const confirmBtn = document.getElementById('confirmDeleteBtn');
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+
+      if (!goalToDelete) return;
+
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`${API_URL}/goals/${goalToDelete}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById('deleteConfirmModal')
+        );
+        modal.hide();
+
+        if (response.ok) {
+          showSuccessPopup("Goal removed successfully!");
+          await loadGoalsWithProgress();
+        } else {
+          showSuccessPopup("Failed to remove goal.");
+        }
+
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+
+      goalToDelete = null;
+
+    });
+  }
+});
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
+
+function showSuccessPopup(message) {
+  document.getElementById('successMessage').innerText = message;
+  const modal = new bootstrap.Modal(document.getElementById('successModal'));
+  modal.show();
+
+  setTimeout(() => {
+    const instance = bootstrap.Modal.getInstance(
+      document.getElementById('successModal')
+    );
+    if (instance) instance.hide();
+  }, 2500);
+}
+
+</script>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">✔ Success</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p id="successMessage" class="fs-5 mb-0"></p>
+      </div>
+      <div class="modal-footer justify-content-center border-0">
+        <button class="btn btn-success px-4" data-bs-dismiss="modal">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Goal Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠ Remove Goal</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="fs-5 mb-0">
+          Are you sure you want to remove this goal?
+        </p>
+      </div>
+      <div class="modal-footer justify-content-center border-0">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Keep Goal
+        </button>
+        <button class="btn btn-danger px-4" id="confirmDeleteBtn">
+          Yes, Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

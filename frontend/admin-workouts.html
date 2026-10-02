@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Management - FitHive Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="p-4">
+        <h4 class="text-white mb-4"><img src="assets/logo.png" width="70" height="70"><strong>FitHive Admin</strong></h4>
+        <nav class="nav flex-column">
+          <a class="nav-link" href="admin.html">📊 Dashboard</a>
+          <a class="nav-link" href="admin-users.html">👥 Users</a>
+          <a class="nav-link active" href="admin-workouts.html">💪 Workouts</a>
+          <a class="nav-link" href="admin-articles.html">📚 Articles</a>
+          <a class="nav-link" href="admin-challenges.html">🏆 Challenges</a>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.2)">
+          <a class="nav-link" href="dashboard.html">🏠 Back to Main Site</a>
+          <a class="nav-link" href="#" id="adminLogout">🚪 Logout</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1" style="background-color: #f8f9fa;">
+      <!-- Top Bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Workout Management</span>
+          <div class="ms-auto">
+            <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
+              ➕ Add New Workout
+            </button>
+            <span class="badge bg-primary" id="adminUserBadge">Admin</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="container-fluid p-4">
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card shadow">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">All Workouts</h6>
+                <div>
+                  <select class="form-select form-select-sm d-inline-block me-2" style="width: 150px;" 
+                    id="filterDifficulty" onchange="filterWorkouts()">
+                    <option value="">All Difficulties</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </select>
+                  <input type="text" class="form-control form-control-sm d-inline-block" style="width: 250px;" 
+                    id="searchWorkouts" placeholder="Search workouts...">
+                  <button class="btn btn-sm btn-primary ms-2" onclick="loadWorkouts()">
+                    🔄️ Refresh
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info d-none" id="workoutAlert"></div>
+                
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Difficulty</th>
+                        <th>Duration</th>
+                        <th>Calories</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="workoutsTableBody">
+                      <tr>
+                        <td colspan="9" class="text-center py-5">
+                          <div class="spinner-border text-primary" role="status"></div>
+                          <p class="mt-2 text-muted">Loading workouts...</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Workout Modal -->
+  <div class="modal fade" id="addWorkoutModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="workoutModalTitle">Add New Workout</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="workoutForm">
+            <input type="hidden" id="workoutId">
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="workoutName" class="form-label">Workout Name *</label>
+                <input type="text" class="form-control" id="workoutName" required>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Category *</label>
+                <select class="form-select" id="category" required>
+                  <option value="">Select Category</option>
+                  <option value="Cardio">Cardio</option>
+                  <option value="Strength">Strength</option>
+                  <option value="Flexibility">Flexibility</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Core">Core</option>
+                  <option value="Yoga">Yoga</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="difficulty" class="form-label">Difficulty Level *</label>
+                <select class="form-select" id="difficulty" required>
+                  <option value="">Select Difficulty</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+              
+              <div class="col-md-4 mb-3">
+                <label for="duration" class="form-label">Duration (minutes) *</label>
+                <input type="number" class="form-control" id="duration" min="1" required>
+              </div>
+              
+              <div class="col-md-4 mb-3">
+                <label for="calories" class="form-label">Calories Burned *</label>
+                <input type="number" class="form-control" id="calories" min="0" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" rows="4" 
+                placeholder="Describe the workout..."></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="isActive" checked>
+                <label class="form-check-label" for="isActive">
+                  Active (visible to users)
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveWorkout()">Save Workout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    let allWorkouts = [];
+    let editMode = false;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      checkAuth();
+      await loadWorkouts();
+      
+      // Search functionality
+      document.getElementById('searchWorkouts').addEventListener('input', filterWorkouts);
+    });
+
+    async function loadWorkouts() {
+      try {
+        const response = await fetch(`${API_URL}/admin/workouts`, {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          allWorkouts = await response.json();
+          displayWorkouts(allWorkouts);
+        } else {
+          showWorkoutAlert('Failed to load workouts', 'danger');
+        }
+      } catch (error) {
+        console.error('Error loading workouts:', error);
+        showWorkoutAlert('Error loading workouts', 'danger');
+      }
+    }
+
+    function displayWorkouts(workouts) {
+      const tbody = document.getElementById('workoutsTableBody');
+      
+      if (workouts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No workouts found</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = '';
+      workouts.forEach(workout => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${workout.workout_id}</td>
+          <td><strong>${workout.workout_name}</strong></td>
+          <td><span class="badge bg-info">${workout.category}</span></td>
+          <td><span class="badge bg-${getDifficultyColor(workout.difficulty_level)}">${workout.difficulty_level}</span></td>
+          <td>${workout.duration_minutes} min</td>
+          <td>${workout.calories_burned} kcal</td>
+          <td>${formatDate(workout.created_at)}</td>
+          <td><span class="badge bg-${workout.is_active ? 'success' : 'secondary'}">${workout.is_active ? 'Active' : 'Inactive'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="editWorkout(${workout.workout_id})">Edit</button>
+            <button class="btn btn-sm btn-${workout.is_active ? 'secondary' : 'success'}" 
+              onclick="toggleWorkoutStatus(${workout.workout_id}, ${workout.is_active})">
+              ${workout.is_active ? 'Deactivate' : 'Activate'}
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="deleteWorkout(${workout.workout_id})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterWorkouts() {
+      const searchTerm = document.getElementById('searchWorkouts').value.toLowerCase();
+      const difficulty = document.getElementById('filterDifficulty').value;
+      
+      let filtered = allWorkouts;
+      
+      if (searchTerm) {
+        filtered = filtered.filter(workout => 
+          workout.workout_name.toLowerCase().includes(searchTerm) ||
+          (workout.description && workout.description.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      if (difficulty) {
+        filtered = filtered.filter(workout => workout.difficulty_level === difficulty);
+      }
+      
+      displayWorkouts(filtered);
+    }
+
+    function editWorkout(workoutId) {
+      const workout = allWorkouts.find(w => w.workout_id === workoutId);
+      if (!workout) return;
+      
+      editMode = true;
+      document.getElementById('workoutModalTitle').textContent = 'Edit Workout';
+      document.getElementById('workoutId').value = workout.workout_id;
+      document.getElementById('workoutName').value = workout.workout_name;
+      document.getElementById('category').value = workout.category;
+      document.getElementById('difficulty').value = workout.difficulty_level;
+      document.getElementById('duration').value = workout.duration_minutes;
+      document.getElementById('calories').value = workout.calories_burned;
+      document.getElementById('description').value = workout.description || '';
+      document.getElementById('isActive').checked = workout.is_active;
+      
+      const modal = new bootstrap.Modal(document.getElementById('addWorkoutModal'));
+      modal.show();
+    }
+
+    async function saveWorkout() {
+      const workoutData = {
+        workout_name: document.getElementById('workoutName').value,
+        category: document.getElementById('category').value,
+        difficulty_level: document.getElementById('difficulty').value,
+        duration_minutes: document.getElementById('duration').value,
+        calories_burned: document.getElementById('calories').value,
+        description: document.getElementById('description').value,
+        is_active: document.getElementById('isActive').checked
+      };
+      
+      try {
+        let response;
+        if (editMode) {
+          const workoutId = document.getElementById('workoutId').value;
+          response = await fetch(`${API_URL}/admin/workouts/${workoutId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(workoutData)
+          });
+        } else {
+          response = await fetch(`${API_URL}/admin/workouts`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(workoutData)
+          });
+        }
+        
+        if (response.ok) {
+          showWorkoutAlert(`Workout ${editMode ? 'updated' : 'created'} successfully`, 'success');
+          bootstrap.Modal.getInstance(document.getElementById('addWorkoutModal')).hide();
+          document.getElementById('workoutForm').reset();
+          editMode = false;
+          await loadWorkouts();
+        } else {
+          showWorkoutAlert('Failed to save workout', 'danger');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showWorkoutAlert('Error saving workout', 'danger');
+      }
+    }
+
+    async function toggleWorkoutStatus(workoutId, isActive) {
+      try {
+        const response = await fetch(`${API_URL}/admin/workouts/${workoutId}/toggle`, {
+          method: 'PUT',
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          showWorkoutAlert('Workout status updated', 'success');
+          await loadWorkouts();
+        } else {
+          showWorkoutAlert('Failed to update status', 'danger');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showWorkoutAlert('Error updating status', 'danger');
+      }
+    }
+
+    async function deleteWorkout(workoutId) {
+      if (!confirm('Are you sure you want to delete this workout? This action cannot be undone.')) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/workouts/${workoutId}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          showWorkoutAlert('Workout deleted successfully', 'success');
+          await loadWorkouts();
+        } else {
+          showWorkoutAlert('Failed to delete workout', 'danger');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showWorkoutAlert('Error deleting workout', 'danger');
+      }
+    }
+
+    function getDifficultyColor(difficulty) {
+      switch(difficulty) {
+        case 'Beginner': return 'success';
+        case 'Intermediate': return 'warning';
+        case 'Advanced': return 'danger';
+        default: return 'secondary';
+      }
+    }
+
+    function showWorkoutAlert(message, type) {
+      const alert = document.getElementById('workoutAlert');
+      alert.className = `alert alert-${type}`;
+      alert.textContent = message;
+      alert.classList.remove('d-none');
+      
+      setTimeout(() => {
+        alert.classList.add('d-none');
+      }, 3000);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    }
+
+    // Reset form when modal is closed
+    document.getElementById('addWorkoutModal').addEventListener('hidden.bs.modal', function () {
+      document.getElementById('workoutForm').reset();
+      document.getElementById('workoutModalTitle').textContent = 'Add New Workout';
+      editMode = false;
+    });
+  </script>
+</body>
+</html>

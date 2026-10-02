@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - FitHive Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="p-4">
+        <h4 class="text-white mb-4"><img src="assets/logo.png" width="70" height="70"><strong>FitHive Admin</strong></h4>
+        <nav class="nav flex-column">
+          <a class="nav-link" href="admin.html">📊 Dashboard</a>
+          <a class="nav-link active" href="admin-users.html">👥 Users</a>
+          <a class="nav-link" href="admin-workouts.html">💪 Workouts</a>
+          <a class="nav-link" href="admin-articles.html">📚 Articles</a>
+          <a class="nav-link" href="admin-challenges.html">🏆 Challenges</a>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.2)">
+          <a class="nav-link" href="dashboard.html">🏠 Back to Main Site</a>
+          <a class="nav-link" href="#" id="adminLogout">🚪 Logout</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1" style="background-color: #f8f9fa;">
+      <!-- Top Bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">User Management</span>
+          <div class="ms-auto">
+            <span class="badge bg-primary" id="adminUserBadge">Admin</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="container-fluid p-4">
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card shadow">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">All Users</h6>
+                <div>
+                  <input type="text" class="form-control form-control-sm d-inline-block" style="width: 250px;" 
+                    id="searchUsers" placeholder="Search users...">
+                  <button class="btn btn-sm btn-primary ms-2" onclick="loadUsers()">
+                    🔄️ Refresh
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info d-none" id="userAlert"></div>
+                
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Joined</th>
+                        <th>Last Login</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                      <tr>
+                        <td colspan="10" class="text-center py-5">
+                          <div class="spinner-border text-primary" role="status"></div>
+                          <p class="mt-2 text-muted">Loading users...</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Detail Modal -->
+  <div class="modal fade" id="userDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">User Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="userDetailContent">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    let allUsers = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      checkAuth();
+      await loadUsers();
+      
+      // Search functionality
+      document.getElementById('searchUsers').addEventListener('input', filterUsers);
+    });
+
+    async function loadUsers() {
+      try {
+        const response = await fetch(`${API_URL}/admin/users`, {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          allUsers = await response.json();
+          displayUsers(allUsers);
+        } else {
+          showUserAlert('Failed to load users', 'danger');
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+        showUserAlert('Error loading users', 'danger');
+      }
+    }
+
+    function displayUsers(users) {
+      const tbody = document.getElementById('usersTableBody');
+      
+      if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">No users found</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.user_id}</td>
+          <td><strong>${user.username}</strong></td>
+          <td>${user.email}</td>
+          <td>${user.full_name || '-'}</td>
+          <td>${user.age || '-'}</td>
+          <td>${user.gender || '-'}</td>
+          <td>${formatDate(user.created_at)}</td>
+          <td>${user.last_login ? formatDate(user.last_login) : 'Never'}</td>
+          <td><span class="badge bg-${user.is_active ? 'success' : 'danger'}">${user.is_active ? 'Active' : 'Inactive'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-info" onclick="viewUserDetails(${user.user_id})">View</button>
+            <button class="btn btn-sm btn-${user.is_active ? 'danger' : 'success'}" 
+              onclick="toggleUserStatus(${user.user_id}, ${user.is_active})">
+              ${user.is_active ? 'Deactivate' : 'Activate'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterUsers() {
+      const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
+      
+      if (searchTerm === '') {
+        displayUsers(allUsers);
+        return;
+      }
+      
+      const filtered = allUsers.filter(user => 
+        user.username.toLowerCase().includes(searchTerm) ||
+        user.email.toLowerCase().includes(searchTerm) ||
+        (user.full_name && user.full_name.toLowerCase().includes(searchTerm))
+      );
+      
+      displayUsers(filtered);
+    }
+
+    async function viewUserDetails(userId) {
+      const modal = new bootstrap.Modal(document.getElementById('userDetailModal'));
+      modal.show();
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          const user = await response.json();
+          displayUserDetails(user);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function displayUserDetails(user) {
+      const content = document.getElementById('userDetailContent');
+      content.innerHTML = `
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-muted">Personal Information</h6>
+            <table class="table table-sm">
+              <tr><th>User ID:</th><td>${user.user_id}</td></tr>
+              <tr><th>Username:</th><td>${user.username}</td></tr>
+              <tr><th>Email:</th><td>${user.email}</td></tr>
+              <tr><th>Full Name:</th><td>${user.full_name || '-'}</td></tr>
+              <tr><th>Age:</th><td>${user.age || '-'}</td></tr>
+              <tr><th>Gender:</th><td>${user.gender || '-'}</td></tr>
+              <tr><th>Height:</th><td>${user.height ? user.height + ' cm' : '-'}</td></tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-muted">Account Information</h6>
+            <table class="table table-sm">
+              <tr><th>Status:</th><td><span class="badge bg-${user.is_active ? 'success' : 'danger'}">${user.is_active ? 'Active' : 'Inactive'}</span></td></tr>
+              <tr><th>Created:</th><td>${formatDate(user.created_at)}</td></tr>
+              <tr><th>Last Updated:</th><td>${formatDate(user.updated_at)}</td></tr>
+              <tr><th>Last Login:</th><td>${user.last_login ? formatDate(user.last_login) : 'Never'}</td></tr>
+            </table>
+            
+            <h6 class="text-muted mt-3">Activity Stats</h6>
+            <table class="table table-sm">
+              <tr><th>Goals:</th><td>${user.total_goals || 0}</td></tr>
+              <tr><th>Progress Entries:</th><td>${user.total_progress || 0}</td></tr>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function toggleUserStatus(userId, isActive) {
+      const action = isActive ? 'deactivate' : 'activate';
+      const confirmMsg = `Are you sure you want to ${action} this user?`;
+      
+      if (!confirm(confirmMsg)) return;
+      
+      try {
+        const response = await fetch(`${API_URL}/admin/users/${userId}/${action}`, {
+          method: 'PUT',
+          headers: getAuthHeaders()
+        });
+        
+        if (response.ok) {
+          showUserAlert(`User ${action}d successfully`, 'success');
+          await loadUsers();
+        } else {
+          showUserAlert(`Failed to ${action} user`, 'danger');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showUserAlert('Error updating user status', 'danger');
+      }
+    }
+
+    function showUserAlert(message, type) {
+      const alert = document.getElementById('userAlert');
+      alert.className = `alert alert-${type}`;
+      alert.textContent = message;
+      alert.classList.remove('d-none');
+      
+      setTimeout(() => {
+        alert.classList.add('d-none');
+      }, 3000);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    }
+  </script>
+</body>
+</html>

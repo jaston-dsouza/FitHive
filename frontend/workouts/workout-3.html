@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Details - FitHive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Animations */
+    @keyframes squat {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(40px); }
+    }
+
+    @keyframes pushup {
+      0%, 100% { transform: translateX(-50%) rotate(0deg); }
+      50% { transform: translateX(-50%) rotate(-15deg) translateY(20px); }
+    }
+
+    @keyframes jumping-jack {
+      0%, 100% { 
+        transform: translateX(-50%) translateY(0);
+      }
+      50% { 
+        transform: translateX(-50%) translateY(-40px);
+      }
+    }
+
+    @keyframes plank {
+      0%, 100% { transform: translateX(-50%) rotate(0deg); }
+      50% { transform: translateX(-50%) rotate(-5deg); }
+    }
+
+    @keyframes armRotate {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+    }
+
+    @keyframes legKick {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(45deg); }
+    }
+
+    /* Timer Styles */
+    .timer-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 40px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .timer-display {
+      font-size: 96px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      margin: 20px 0;
+    }
+
+    .timer-controls button {
+      margin: 10px;
+      min-width: 120px;
+    }
+
+    /* Progress Ring */
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.35s;
+      transform-origin: 50% 50%;
+    }
+
+    /* Rest Period */
+    .rest-period {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 20px;
+      padding: 30px;
+      color: white;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* Completed State */
+    .workout-complete {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 20px;
+      padding: 50px;
+      color: white;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="../dashboard.html">🏋️ FitHive</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="../dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="../workouts.html">Workouts</a></li>
+          <li class="nav-item"><a class="nav-link" href="../progress.html">Progress</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container py-4">
+    <!-- Back Button -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <a href="../workouts.html" class="btn btn-outline-primary">← Back to Workouts</a>
+      </div>
+    </div>
+
+    <!-- Workout Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h1 class="mb-2" id="workoutName">Yoga Flow</h1>
+                <p class="text-muted mb-3" id="workoutDescription">Relaxing yoga sequence for flexibility and stress relief.</p>
+                <div class="d-flex gap-2 flex-wrap">
+                  <span class="badge bg-success" id="workoutDifficulty">Beginner</span>
+                  <span class="badge bg-info" id="workoutCategory">Flexibility</span>
+                  <span class="badge bg-primary">⏱️ <span id="workoutDuration">40</span> minutes</span>
+                  <span class="badge bg-danger">🔥 <span id="workoutCalories">150</span> calories</span>
+                </div>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-lg btn-success" id="startWorkoutBtn" onclick="startWorkout()">
+                  ▶️ Start Workout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workout Content -->
+    <div class="row" id="workoutInfo">
+      <!-- Exercise List -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">📋 Exercise Routine</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group" id="exercisesList">
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">1. Mountain Pose</h6>
+                    <small class="text-muted">Warm up exercise</small>
+                  </div>
+                  <span class="badge bg-primary">2 min</span>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">2. Downward Dog</h6>
+                    <small class="text-muted">Cardio burst</small>
+                  </div>
+                  <span class="badge bg-primary">3 min</span>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">3. Warrior Pose</h6>
+                    <small class="text-muted">Full body</small>
+                  </div>
+                  <span class="badge bg-primary">4 min</span>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">4. Tree Pose</h6>
+                    <small class="text-muted">Core & cardio</small>
+                  </div>
+                  <span class="badge bg-primary">3 min</span>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">5. Child's Pose</h6>
+                    <small class="text-muted">Cardio</small>
+                  </div>
+                  <span class="badge bg-primary">4 min</span>
+                </div>
+              </div>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">6. Savasana</h6>
+                    <small class="text-muted">Recovery</small>
+                  </div>
+                  <span class="badge bg-primary">4 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workout Tips -->
+        <div class="card shadow-sm mt-4">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">💡 Workout Tips</h5>
+          </div>
+          <div class="card-body">
+            <ul class="mb-0">
+              <li>Warm up for 5 minutes before starting</li>
+              <li>Stay hydrated throughout</li>
+              <li>Focus on proper form over speed</li>
+              <li>Take breaks when needed</li>
+              <li>Cool down and stretch after</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated Figure Preview -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">🎬 Exercise Preview</h5>
+          </div>
+          <div class="card-body">
+            <div class="exercise-animation d-flex justify-content-center align-items-center">
+               <img id="exercisePreview"
+                src="../assets/jumping-jack.gif"
+                alt="Exercise Preview"
+                class="img-fluid rounded"
+                style="max-height: 350px;">
+            </div>
+            <div class="text-center mt-3">
+              <p class="mb-2"><strong>Current Exercise:</strong> <span id="currentExerciseName">Ready to Start</span></p>
+              <button class="btn btn-sm btn-outline-primary" onclick="changeAnimation('jumping-jack')">Jumping Jack</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="changeAnimation('squat')">Squat</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="changeAnimation('pushup')">Push-up</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="changeAnimation('plank')">Plank</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workout Timer Section (Hidden Initially) -->
+    <div class="row d-none" id="workoutTimer">
+      <div class="col-lg-6 mb-4">
+        <div class="timer-container">
+          <h3>Current Exercise</h3>
+          <h2 id="currentExercise">Jumping Jacks</h2>
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          
+          <!-- Progress Ring -->
+          <svg width="200" height="200" style="margin: 20px auto; display: block;">
+            <circle class="progress-ring-circle" stroke="#ffffff40" stroke-width="10" fill="transparent" r="90" cx="100" cy="100"/>
+            <circle class="progress-ring-circle" id="progressCircle" stroke="#ffffff" stroke-width="10" fill="transparent" r="90" cx="100" cy="100" 
+                    stroke-dasharray="565.48" stroke-dashoffset="0"/>
+          </svg>
+
+          <div class="timer-controls">
+            <button class="btn btn-light btn-lg" id="pauseBtn" onclick="pauseTimer()">⏸️ Pause</button>
+            <button class="btn btn-danger btn-lg" onclick="stopWorkout()">⏹️ Stop</button>
+            <button class="btn btn-info btn-lg" onclick="skipExercise()">⏭️ Skip</button>
+          </div>
+
+          <div class="mt-4">
+            <p class="mb-1">Exercise <span id="currentExerciseNumber">1</span> of <span id="totalExercises">5</span></p>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar" id="workoutProgress" role="progressbar" style="width: 20%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-4">
+        <div class="exercise-animation d-flex justify-content-center align-items-center">
+        <img id="activeExerciseGif"
+         src="../assets/jumping-jack.gif"
+         class="img-fluid rounded"
+         style="max-height: 350px;">
+        </div>
+      </div>
+
+        <!-- Exercise Instructions -->
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5>Instructions:</h5>
+            <p id="exerciseInstructions">Stand with feet together. Jump while spreading legs and raising arms overhead. Return to start.</p>
+            <div class="alert alert-warning">
+              <strong>⚠️ Important:</strong> Maintain proper form and breathing throughout the exercise.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rest Period (Hidden Initially) -->
+    <div class="row d-none" id="restPeriod">
+      <div class="col-12">
+        <div class="rest-period">
+          <h1>😌 Rest Time!</h1>
+          <div style="font-size: 72px; margin: 30px 0;" id="restTimer">00:30</div>
+          <p class="lead">Take a breather. Next exercise starting soon...</p>
+          <p><strong>Up Next:</strong> <span id="nextExercise">High Knees</span></p>
+          <button class="btn btn-light btn-lg" onclick="skipRest()">Skip Rest ⏭️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workout Complete (Hidden Initially) -->
+    <div class="row d-none" id="workoutComplete">
+      <div class="col-12">
+        <div class="workout-complete">
+          <div style="font-size: 96px;">🎉</div>
+          <h1>Workout Complete!</h1>
+          <h3>Great job! You've finished the workout.</h3>
+          
+          <div class="row mt-5">
+            <div class="col-md-3">
+              <h4>⏱️</h4>
+              <p>Duration</p>
+              <h3 id="completedDuration">30 min</h3>
+            </div>
+            <div class="col-md-3">
+              <h4>🔥</h4>
+              <p>Calories</p>
+              <h3 id="completedCalories">250 kcal</h3>
+            </div>
+            <div class="col-md-3">
+              <h4>💪</h4>
+              <p>Exercises</p>
+              <h3 id="completedExercises">5</h3>
+            </div>
+            <div class="col-md-3">
+              <h4>⭐</h4>
+              <p>Performance</p>
+              <h3>Excellent!</h3>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <button class="btn btn-light btn-lg me-3" onclick="window.location.href='../progress.html'">
+              📊 Log Progress
+            </button>
+            <button class="btn btn-outline-light btn-lg me-3" onclick="location.reload()">
+              🔄 Do Again
+            </button>
+            <button class="btn btn-outline-light btn-lg" onclick="window.location.href='../workouts.html'">
+              ← Back to Workouts
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Workout Data (This will be loaded dynamically from URL parameter)
+    let workoutData = {
+  id: 3,
+  name: "Yoga Flow",
+  description: "Relaxing yoga sequence for flexibility and stress relief",
+  difficulty: "Beginner",
+  category: "Flexibility",
+  duration: 40,
+  calories: 150,
+  exercises: [
+    { name: "Mountain Pose", duration: 120, animation: "mountain", instructions: "Stand tall, feet together, arms at sides. Breathe deeply." },
+    { name: "Downward Dog", duration: 180, animation: "dog", instructions: "Form inverted V-shape. Hands and feet on ground, hips high." },
+    { name: "Warrior Pose", duration: 240, animation: "warrior", instructions: "Step forward into lunge, arms extended. Hold with strength." },
+    { name: "Tree Pose", duration: 180, animation: "tree", instructions: "Balance on one leg, other foot on inner thigh. Hands in prayer." },
+    { name: "Child's Pose", duration: 240, animation: "child", instructions: "Kneel, sit back on heels, extend arms forward. Relax and breathe." },
+    { name: "Savasana", duration: 240, animation: "shavasana", instructions: "Lie flat on back, arms at sides. Complete relaxation." }
+  ]
+};
+
+   
+    // Load workout from URL parameter
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const workoutId = urlParams.get('id');
+      
+      if (workoutId) {
+        loadWorkoutData(workoutId);
+      }
+      
+      // Set preview animation
+      changeAnimation('jumping-jack');
+    });
+
+    // Change figure animation
+    function changeAnimation(type) {
+  const preview = document.getElementById('exercisePreview');
+
+  const gifMap = {
+    'jumping-jack': '../assets/jumping-jack.gif',
+    'squat': '../assets/squat.gif',
+    'pushup': '../assets/pushup.gif',
+    'plank': '../assets/plank.gif'
+  };
+
+  preview.src = gifMap[type] || '../assets/default.gif';
+
+  const names = {
+    'jumping-jack': 'Jumping Jack',
+    'squat': 'squat',
+    'pushup': 'Pushup',
+    'plank': 'plank'
+  };
+
+  document.getElementById('currentExerciseName').textContent =
+    names[type] || 'Exercise';
+}
+
+  // ============================================================================
+// FIXED WORKOUT TIMER - Replace timer functions in all workout HTML files
+// This fixes the skip exercise rest timer bug
+// ============================================================================
+
+let currentExerciseIndex = 0;
+let timerInterval = null;
+let restInterval = null; // Separate interval for rest timer
+let timeRemaining = 0;
+let isPaused = false;
+const REST_DURATION = 30; // seconds
+
+// Start workout
+function startWorkout() {
+  document.getElementById('workoutInfo').classList.add('d-none');
+  document.getElementById('workoutTimer').classList.remove('d-none');
+  currentExerciseIndex = 0;
+  startExercise();
+}
+
+// Start individual exercise
+function startExercise() {
+  if (currentExerciseIndex >= workoutData.exercises.length) {
+    completeWorkout();
+    return;
+  }
+
+  const exercise = workoutData.exercises[currentExerciseIndex];
+  timeRemaining = exercise.duration;
+  isPaused = false;
+  
+  // Update UI
+  document.getElementById('currentExercise').textContent = exercise.name;
+  document.getElementById('currentExerciseNumber').textContent = currentExerciseIndex + 1;
+  document.getElementById('totalExercises').textContent = workoutData.exercises.length;
+  document.getElementById('exerciseInstructions').textContent = exercise.instructions;
+  
+  // Update progress bar
+  const progress = ((currentExerciseIndex) / workoutData.exercises.length) * 100;
+  document.getElementById('workoutProgress').style.width = progress + '%';
+  
+  // Set animation
+  updateActiveExerciseGif(exercise.animation);
+  
+  // Reset pause button
+  const pauseBtn = document.getElementById('pauseBtn');
+  pauseBtn.innerHTML = '⏸️ Pause';
+  
+  // Start timer
+  updateTimerDisplay();
+  updateProgressRing();
+  startTimer();
+}
+
+function updateActiveExerciseGif(type) {
+  const gif = document.getElementById('activeExerciseGif');
+
+  const gifMap = {
+    'mountain': '../assets/mountain.gif',
+    'dog': '../assets/dog.gif',
+    'warrior': '../assets/warrior.gif',
+    'tree': '../assets/tree.gif',
+    'child': '../assets/child.gif',
+    'shavasana': '../assets/shavasana.gif'
+  };
+
+  gif.src = gifMap[type] || '../assets/default.gif';
+}
+
+
+// Start exercise timer
+function startTimer() {
+  // Clear any existing timer
+  if (timerInterval) clearInterval(timerInterval);
+  
+  timerInterval = setInterval(() => {
+    if (!isPaused) {
+      timeRemaining--;
+      updateTimerDisplay();
+      updateProgressRing();
+      
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        currentExerciseIndex++;
+        
+        if (currentExerciseIndex < workoutData.exercises.length) {
+          startRestPeriod();
+        } else {
+          completeWorkout();
+        }
+      }
+    }
+  }, 1000);
+}
+
+// Update timer display
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = timeRemaining % 60;
+  document.getElementById('timerDisplay').textContent = 
+    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Update progress ring
+function updateProgressRing() {
+  const exercise = workoutData.exercises[currentExerciseIndex];
+  if (!exercise) return;
+
+  const totalDuration = exercise.duration;
+  const progress = timeRemaining / totalDuration;
+
+  const circumference = 2 * Math.PI * 90;
+  const offset = circumference * (1 - progress);
+
+  document.getElementById('progressCircle').style.strokeDashoffset = offset;
+}
+
+
+// Pause/Resume timer
+function pauseTimer() {
+  isPaused = !isPaused;
+  const btn = document.getElementById('pauseBtn');
+  btn.innerHTML = isPaused ? '▶️ Resume' : '⏸️ Pause';
+}
+
+// Skip exercise - FIXED VERSION
+function skipExercise() {
+  if (window.confirm('Skip this exercise?')) {
+    // Clear current exercise timer
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    
+    currentExerciseIndex++;
+    
+    if (currentExerciseIndex < workoutData.exercises.length) {
+      // Start rest period with fresh timer
+      startRestPeriod();
+    } else {
+      completeWorkout();
+    }
+  }
+}
+
+// Start rest period - FIXED VERSION
+function startRestPeriod() {
+  // Clear any existing intervals
+  if (timerInterval) clearInterval(timerInterval);
+  if (restInterval) clearInterval(restInterval);
+  timerInterval = null;
+  restInterval = null;
+  
+  // Hide workout timer, show rest period
+  document.getElementById('workoutTimer').classList.add('d-none');
+  document.getElementById('restPeriod').classList.remove('d-none');
+  
+  // Set next exercise name
+  if (currentExerciseIndex < workoutData.exercises.length) {
+    document.getElementById('nextExercise').textContent = workoutData.exercises[currentExerciseIndex].name;
+  }
+  
+  // Initialize fresh rest timer
+  let restTime = REST_DURATION;
+  
+  // Update display immediately
+  updateRestDisplay(restTime);
+  
+  // Start rest interval
+  restInterval = setInterval(() => {
+    restTime--;
+    updateRestDisplay(restTime);
+    
+    if (restTime <= 0) {
+      clearInterval(restInterval);
+      restInterval = null;
+      endRestPeriod();
+    }
+  }, 1000);
+}
+
+// Update rest timer display
+function updateRestDisplay(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  document.getElementById('restTimer').textContent = 
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+// End rest period and start next exercise
+function endRestPeriod() {
+  document.getElementById('restPeriod').classList.add('d-none');
+  document.getElementById('workoutTimer').classList.remove('d-none');
+  startExercise();
+}
+
+// Skip rest - FIXED VERSION
+function skipRest() {
+  // Clear rest interval
+  if (restInterval) {
+    clearInterval(restInterval);
+    restInterval = null;
+  }
+  
+  endRestPeriod();
+}
+
+// Stop workout
+function stopWorkout() {
+  const modal = new bootstrap.Modal(
+    document.getElementById('stopConfirmModal')
+  );
+  modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const confirmStopBtn = document.getElementById('confirmStopBtn');
+
+  if (confirmStopBtn) {
+    confirmStopBtn.addEventListener('click', () => {
+
+      if (timerInterval) clearInterval(timerInterval);
+      if (restInterval) clearInterval(restInterval);
+
+      timerInterval = null;
+      restInterval = null;
+
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById('stopConfirmModal')
+      );
+      modal.hide();
+
+      showSuccessPopup("Workout stopped successfully.");
+
+      setTimeout(() => {
+        window.location.href = '../workouts.html';
+      }, 1500);
+    });
+  }
+});
+
+
+// Complete workout - Enhanced with auto-logging
+async function completeWorkout() {
+  // Clear all intervals
+  if (timerInterval) clearInterval(timerInterval);
+  if (restInterval) clearInterval(restInterval);
+  timerInterval = null;
+  restInterval = null;
+  
+  // Hide workout timer, show completion
+  document.getElementById('workoutTimer').classList.add('d-none');
+  document.getElementById('workoutComplete').classList.remove('d-none');
+  
+  // Update completion stats
+  document.getElementById('completedDuration').textContent = workoutData.duration + ' min';
+  document.getElementById('completedCalories').textContent = workoutData.calories + ' kcal';
+  document.getElementById('completedExercises').textContent = workoutData.exercises.length;
+  
+  // AUTO-LOG WORKOUT
+  await logWorkoutProgress();
+  await updateGoalsProgress();
+  await updateChallengeProgress();
+  showSuccessNotification();
+}
+
+// Auto-log workout to database
+async function logWorkoutProgress() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    const progressData = {
+      date: today,
+      weight: null,
+      calories_consumed: null,
+      calories_burned: workoutData.calories,
+      workout_duration: workoutData.duration,
+      notes: `Completed: ${workoutData.name}`
+    };
+    
+    // Get latest weight
+    const progressRes = await fetch('http://localhost:3000/api/progress', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (progressRes.ok) {
+      const progressHistory = await progressRes.json();
+      for (let entry of progressHistory) {
+        if (entry.weight) {
+          progressData.weight = entry.weight;
+          break;
+        }
+      }
+    }
+    
+    // Log progress
+    const response = await fetch('http://localhost:3000/api/progress', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(progressData)
+    });
+    
+    if (response.ok) {
+      showSuccessPopup("Workout completed and logged successfully! 💪🔥");
+
+      // ALSO log to workout_logs table for dashboard analytics
+await fetch('http://localhost:3000/api/workout-logs', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    workout_name: workoutData.name,
+    duration: workoutData.duration,
+    calories: workoutData.calories
+  })
+});
+
+      
+      // Save to localStorage
+      const workoutLog = {
+        date: today,
+        workout: workoutData.name,
+        duration: workoutData.duration,
+        calories: workoutData.calories,
+        timestamp: new Date().toISOString()
+      };
+      
+      const recentWorkouts = JSON.parse(localStorage.getItem('recentWorkouts') || '[]');
+      recentWorkouts.unshift(workoutLog);
+      localStorage.setItem('recentWorkouts', JSON.stringify(recentWorkouts.slice(0, 10)));
+    }
+  } catch (error) {
+    console.error('Error logging workout:', error);
+  }
+}
+
+// Update goals progress
+async function updateGoalsProgress() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    const response = await fetch('http://localhost:3000/api/goals', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (response.ok) {
+      const goals = await response.json();
+      console.log('Goals updated with workout progress');
+    }
+  } catch (error) {
+    console.error('Error updating goals:', error);
+  }
+}
+
+// Update challenge progress
+async function updateChallengeProgress() {
+  try {
+    const activeChallenges = JSON.parse(localStorage.getItem('activeChallenges') || '[]');
+    
+    if (activeChallenges.length === 0) return;
+    
+    for (let challenge of activeChallenges) {
+      if (challenge.target_metric === 'Workouts') {
+        challenge.current_value = (challenge.current_value || 0) + 1;
+      }
+      
+      if (challenge.target_metric === 'Calories') {
+        challenge.current_value = (challenge.current_value || 0) + workoutData.calories;
+      }
+      
+      if (challenge.target_metric === 'Minutes') {
+        challenge.current_value = (challenge.current_value || 0) + workoutData.duration;
+      }
+      
+      if (challenge.current_value >= challenge.target_value) {
+        challenge.completed = true;
+        challenge.completed_date = new Date().toISOString();
+      }
+    }
+    
+    localStorage.setItem('activeChallenges', JSON.stringify(activeChallenges));
+    console.log('✅ Challenge progress updated!');
+  } catch (error) {
+    console.error('Error updating challenges:', error);
+  }
+}
+
+// Show success notification
+function showSuccessNotification() {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 9999;
+    animation: slideIn 0.5s ease;
+  `;
+  
+  notification.innerHTML = `
+    <h5 style="margin: 0 0 10px 0;">🎉 Workout Complete!</h5>
+    <p style="margin: 0;">✅ Progress logged<br>
+    ✅ Goals updated<br>
+    ✅ Challenges tracked</p>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.5s ease';
+    setTimeout(() => notification.remove(), 500);
+  }, 5000);
+}
+
+// Logout
+document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = '../login.html';
+});
+
+function showSuccessPopup(message) {
+  document.getElementById('successMessage').innerText = message;
+  const modal = new bootstrap.Modal(document.getElementById('successModal'));
+  modal.show();
+
+  setTimeout(() => {
+    const instance = bootstrap.Modal.getInstance(document.getElementById('successModal'));
+    if (instance) instance.hide();
+  }, 3000);
+}
+
+  </script>
+
+  <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">🎉 Success</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p id="successMessage" class="mb-0 fs-5"></p>
+      </div>
+      <div class="modal-footer justify-content-center border-0">
+        <button class="btn btn-success px-4" data-bs-dismiss="modal">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stop Workout Confirm Modal -->
+<div class="modal fade" id="stopConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ Stop Workout</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="fs-5 mb-0">
+          Are you sure you want to stop this workout?
+        </p>
+      </div>
+      <div class="modal-footer justify-content-center border-0">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Continue Workout
+        </button>
+        <button class="btn btn-danger px-4" id="confirmStopBtn">
+          Yes, Stop
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
