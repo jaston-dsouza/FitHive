@@ -2,7 +2,7 @@
 // FITHIVE - COMPLETE DASHBOARD.JS
 // ============================================================================
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api";
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Check authentication

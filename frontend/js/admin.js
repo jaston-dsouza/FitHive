@@ -2,7 +2,7 @@
 // FITHIVE - ADMIN PANEL JAVASCRIPT
 // ============================================================================
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api";
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", async () => {

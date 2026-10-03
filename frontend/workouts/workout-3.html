@@ -721,7 +721,7 @@ async function logWorkoutProgress() {
     };
     
     // Get latest weight
-    const progressRes = await fetch('http://localhost:3000/api/progress', {
+    const progressRes = await fetch('/api/progress', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -739,7 +739,7 @@ async function logWorkoutProgress() {
     }
     
     // Log progress
-    const response = await fetch('http://localhost:3000/api/progress', {
+    const response = await fetch('/api/progress', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -752,7 +752,7 @@ async function logWorkoutProgress() {
       showSuccessPopup("Workout completed and logged successfully! 💪🔥");
 
       // ALSO log to workout_logs table for dashboard analytics
-await fetch('http://localhost:3000/api/workout-logs', {
+await fetch('/api/workout-logs', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -790,7 +790,7 @@ async function updateGoalsProgress() {
     const token = localStorage.getItem('token');
     if (!token) return;
     
-    const response = await fetch('http://localhost:3000/api/goals', {
+    const response = await fetch('/api/goals', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
